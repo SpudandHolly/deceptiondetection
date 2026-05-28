@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deception Detection Lab - FSLA Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        header h1 span {
+            color: #ef4444;
+        }
+
+        header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel h2 .icon {
+            font-size: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Section */
+        .results-panel {
+            display: none;
+        }
+
+        .results-panel.active {
+            display: block;
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 8px solid;
+            transition: all 0.5s ease;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .risk-level {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .word-count {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Highlighted Text */
+        .highlighted-text {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .highlighted-text .highlight {
+            transition: all 0.2s ease;
+        }
+
+        .highlighted-text .highlight:hover {
+            filter: brightness(1.2);
+        }
+
+        /* Indicators List */
+        .indicators-list {
+            margin-bottom: 20px;
+        }
+
+        .indicator-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+
+        .indicator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .indicator-name {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .indicator-category {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .indicator-description {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .indicator-matches {
+            font-size: 0.85rem;
+            color: #ef4444;
+            font-style: italic;
+        }
+
+        .indicator-contribution {
+            font-size: 0.8rem;
+            color: #3b82f6;
+            margin-top: 5px;
+        }
+
+        /* Recommendations */
+        .recommendations {
+            margin-top: 20px;
+        }
+
+        .recommendation {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .recommendation.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .recommendation.warning {
+            background: rgba(234, 179, 8, 0.2);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .recommendation.danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .recommendation.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .recommendation-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* Loading state */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Deception <span>Detection</span> Lab</h1>
+            <p>Forensic Statement & Linguistic Analysis (FSLA)</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Input Panel -->
+            <div class="panel input-panel">
+                <h2><span class="icon">📝</span> Enter Text to Analyze</h2>
+                <textarea id="inputText" placeholder="Paste the text you want to analyze here...
+
+Examples of what you can analyze:
+• Insurance claims and statements
+• Interview transcripts
+• Corporate communications
+• Earnings call transcripts
+• Emails or messages
+• Any statement or narrative"></textarea>
+                <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeText()">
+                    Analyze for Deception Indicators
+                </button>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fecaca; border: 1px solid #ef4444;"></div>
+                        High Weight
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fed7aa; border: 1px solid #f97316;"></div>
+                        Medium Weight
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fef08a; border: 1px solid #eab308;"></div>
+                        Low Weight
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="panel">
+                <h2><span class="icon">🔍</span> Analysis Results</h2>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <div class="icon">📊</div>
+                    <p>Enter text and click "Analyze" to see results</p>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing text...</p>
+                </div>
+
+                <!-- Results -->
+                <div class="results-panel" id="results">
+                    <!-- Score Display -->
+                    <div class="score-display">
+                        <div class="score-circle" id="scoreCircle">
+                            <span class="score-number" id="scoreNumber">0</span>
+                            <span class="score-label">/ 100</span>
+                        </div>
+                        <div class="risk-level" id="riskLevel">-</div>
+                        <div class="word-count" id="wordCount">0 words analyzed</div>
+                    </div>
+
+                    <!-- Highlighted Text -->
+                    <h3 style="margin-bottom: 10px; color: #fff;">Analyzed Text</h3>
+                    <div class="highlighted-text" id="highlightedText"></div>
+
+                    <!-- Indicators -->
+                    <h3 style="margin-bottom: 10px; color: #fff;">Indicators Detected (<span id="indicatorCount">0</span>)</h3>
+                    <div class="indicators-list" id="indicatorsList"></div>
+
+                    <!-- Recommendations -->
+                    <h3 style="margin-bottom: 10px; color: #fff;">Recommendations</h3>
+                    <div class="recommendations" id="recommendations"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Based on Forensic Statement & Linguistic Analysis (FSLA) methodology<br>
+            Powered by <a href="https://www.ddlltd.com" target="_blank">Deception Detection Lab</a>
+        </footer>
+    </div>
+
+    <script>
+        async function analyzeText() {
+            const text = document.getElementById('inputText').value.trim();
+            const btn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!text) {
+                alert('Please enter some text to analyze');
+                return;
+            }
+
+            // Show loading
+            btn.disabled = true;
+            btn.textContent = 'Analyzing...';
+            loading.classList.add('active');
+            results.classList.remove('active');
+            emptyState.style.display = 'none';
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text }),
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                displayResults(data);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while analyzing the text');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Analyze for Deception Indicators';
+                loading.classList.remove('active');
+            }
+        }
+
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            results.classList.add('active');
+
+            // Score circle
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreNumber = document.getElementById('scoreNumber');
+            const riskLevel = document.getElementById('riskLevel');
+            const wordCount = document.getElementById('wordCount');
+
+            scoreNumber.textContent = data.score;
+            scoreCircle.style.borderColor = data.risk_color;
+            riskLevel.textContent = `Risk Level: ${data.risk_level}`;
+            riskLevel.style.color = data.risk_color;
+            wordCount.textContent = `${data.word_count} words analyzed • ${data.indicators_count} indicators found`;
+
+            // Highlighted text
+            document.getElementById('highlightedText').innerHTML = data.highlighted_html;
+
+            // Indicator count
+            document.getElementById('indicatorCount').textContent = data.indicators_count;
+
+            // Indicators list
+            const indicatorsList = document.getElementById('indicatorsList');
+            indicatorsList.innerHTML = '';
+
+            if (data.indicators.length === 0) {
+                indicatorsList.innerHTML = '<p style="color: #22c55e; text-align: center; padding: 20px;">No significant deception indicators detected.</p>';
+            } else {
+                data.indicators.forEach(ind => {
+                    let borderColor;
+                    if (ind.weight >= 1.5) borderColor = '#ef4444';
+                    else if (ind.weight >= 1.3) borderColor = '#f97316';
+                    else borderColor = '#eab308';
+
+                    const item = document.createElement('div');
+                    item.className = 'indicator-item';
+                    item.style.borderLeftColor = borderColor;
+                    item.innerHTML = `
+                        <div class="indicator-header">
+                            <span class="indicator-name">${ind.name}</span>
+                            <span class="indicator-category">${ind.category}</span>
+                        </div>
+                        <div class="indicator-description">${ind.description}</div>
+                        <div class="indicator-matches">Found: "${ind.matches.join('", "')}"</div>
+                        <div class="indicator-contribution">Contribution to score: +${ind.contribution}</div>
+                    `;
+                    indicatorsList.appendChild(item);
+                });
+            }
+
+            // Recommendations
+            const recommendationsEl = document.getElementById('recommendations');
+            recommendationsEl.innerHTML = '';
+
+            const icons = {
+                success: '✅',
+                warning: '⚠️',
+                danger: '🚨',
+                info: 'ℹ️'
+            };
+
+            data.recommendations.forEach(rec => {
+                const item = document.createElement('div');
+                item.className = `recommendation ${rec.type}`;
+                item.innerHTML = `
+                    <span class="recommendation-icon">${icons[rec.type]}</span>
+                    <span>${rec.text}</span>
+                `;
+                recommendationsEl.appendChild(item);
+            });
+        }
+
+        // Allow Ctrl+Enter to submit
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                analyzeText();
+            }
+        });
+    </script>
+</body>
+</html>
