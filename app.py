@@ -645,7 +645,6 @@ class DeceptionDetector:
                 patterns=[
                     r"\b(and\s+that('s|\s+is)\s+(it|all|what\s+happened))\b",
                     r"\b(the\s+end|that's\s+basically\s+it|that's\s+my\s+story)\b",
-                    r"(\.|\!)\s*$(?<!(\bpolice\b|\breported\b|\bhospital\b|\bhelp\b).{0,50}$)",
                 ],
                 weight=1.3,
                 category="Structure",
