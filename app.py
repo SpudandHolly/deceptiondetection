@@ -1154,14 +1154,21 @@ def reset_rules():
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    data = request.get_json()
-    text = data.get('text', '')
+    try:
+        data = request.get_json()
+        text = data.get('text', '')
 
-    if not text.strip():
-        return jsonify({'error': 'Please enter some text to analyze'})
+        if not text.strip():
+            return jsonify({'error': 'Please enter some text to analyze'})
 
-    result = detector.analyze(text)
-    return jsonify(result)
+        result = detector.analyze(text)
+        return jsonify(result)
+    except Exception as e:
+        import traceback
+        return jsonify({
+            'error': f'Analysis failed: {str(e)}',
+            'traceback': traceback.format_exc()
+        }), 500
 
 
 if __name__ == '__main__':

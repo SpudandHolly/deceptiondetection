@@ -423,7 +423,10 @@
         <div class="main-content">
             <!-- Input Panel -->
             <div class="panel input-panel">
-                <h2><span class="icon">📝</span> Enter Text to Analyze</h2>
+                <h2 style="display: flex; align-items: center; justify-content: space-between;">
+                    <span><span class="icon">📝</span> Enter Text to Analyze</span>
+                    <button onclick="loadSampleText()" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(6, 182, 212, 0.2); border: 1px solid #06b6d4; color: #06b6d4; border-radius: 6px; cursor: pointer; font-weight: normal;">Load Sample</button>
+                </h2>
                 <textarea id="inputText" placeholder="Paste the text you want to analyze here...
 
 Examples of what you can analyze:
@@ -433,14 +436,9 @@ Examples of what you can analyze:
 • Earnings call transcripts
 • Emails or messages
 • Any statement or narrative"></textarea>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeText()" style="flex: 1;">
-                        Analyze for Deception Indicators
-                    </button>
-                    <button class="btn btn-secondary" onclick="loadSampleText()" style="flex: 0 0 auto; background: rgba(6, 182, 212, 0.2); border: 1px solid #06b6d4; color: #06b6d4;">
-                        Load Sample
-                    </button>
-                </div>
+                <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeText()">
+                    Analyze for Deception Indicators
+                </button>
 
                 <div class="legend">
                     <div class="legend-item">
