@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -51,6 +51,7 @@
         .nav-links {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
 
         .nav-links a {
@@ -69,11 +70,11 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1.2fr;
             gap: 30px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
@@ -99,9 +100,18 @@
             font-size: 1.5rem;
         }
 
+        .panel h3 {
+            font-size: 1rem;
+            margin: 20px 0 10px 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         textarea {
             width: 100%;
-            height: 300px;
+            height: 280px;
             background: rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 12px;
@@ -124,20 +134,20 @@
         }
 
         .btn {
-            width: 100%;
-            padding: 15px 30px;
-            font-size: 1.1rem;
+            padding: 12px 24px;
+            font-size: 1rem;
             font-weight: 600;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 15px;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
+            width: 100%;
+            margin-top: 15px;
         }
 
         .btn-primary:hover {
@@ -151,6 +161,62 @@
             transform: none;
         }
 
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Sample dropdown */
+        .sample-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .sample-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            min-width: 220px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .sample-dropdown-content.show {
+            display: block;
+        }
+
+        .sample-dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sample-dropdown-content a:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .sample-dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
         /* Results Section */
         .results-panel {
             display: none;
@@ -162,46 +228,148 @@
 
         .score-display {
             text-align: center;
-            padding: 30px;
+            padding: 25px;
             background: rgba(0,0,0,0.3);
             border-radius: 16px;
             margin-bottom: 20px;
         }
 
+        .score-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
         .score-circle {
-            width: 150px;
-            height: 150px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            border: 8px solid;
+            border: 6px solid;
             transition: all 0.5s ease;
         }
 
         .score-number {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #fff;
         }
 
         .score-label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #888;
         }
 
+        .score-info {
+            text-align: left;
+        }
+
         .risk-level {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            margin-top: 10px;
+            margin-bottom: 5px;
         }
 
         .word-count {
             color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Action buttons row */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons .btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Charts row */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        /* Red flags */
+        .red-flags-list {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .red-flag-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
             font-size: 0.9rem;
-            margin-top: 5px;
+        }
+
+        .red-flag-item:last-child {
+            border-bottom: none;
+        }
+
+        .red-flag-icon {
+            color: #ef4444;
+            flex-shrink: 0;
+        }
+
+        /* Follow-up questions */
+        .questions-list {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            color: #fff;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+
+        .question-rationale {
+            font-size: 0.8rem;
+            color: #888;
         }
 
         /* Highlighted Text */
@@ -217,6 +385,7 @@
 
         .highlighted-text .highlight {
             transition: all 0.2s ease;
+            cursor: pointer;
         }
 
         .highlighted-text .highlight:hover {
@@ -226,6 +395,8 @@
         /* Indicators List */
         .indicators-list {
             margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .indicator-item {
@@ -234,6 +405,12 @@
             padding: 15px;
             margin-bottom: 10px;
             border-left: 4px solid;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .indicator-item:hover {
+            background: rgba(0,0,0,0.3);
         }
 
         .indicator-header {
@@ -316,7 +493,7 @@
         /* Legend */
         .legend {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
             margin-top: 15px;
             flex-wrap: wrap;
@@ -325,15 +502,15 @@
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 6px;
+            font-size: 0.75rem;
             color: #888;
         }
 
         .legend-color {
-            width: 20px;
-            height: 12px;
-            border-radius: 3px;
+            width: 16px;
+            height: 10px;
+            border-radius: 2px;
         }
 
         /* Loading state */
@@ -373,6 +550,138 @@
             margin-bottom: 20px;
         }
 
+        /* History panel */
+        .history-panel {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(0,0,0,0.3);
+        }
+
+        .history-item-info {
+            flex: 1;
+        }
+
+        .history-item-title {
+            font-size: 0.85rem;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .history-item-meta {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .history-item-score {
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+        }
+
+        .modal-section-title {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .modal-section-content {
+            color: #e0e0e0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: #22c55e;
+            color: white;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
         /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -404,8 +713,37 @@
             color: #3b82f6;
             text-decoration: none;
         }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .panel {
+                background: white;
+                border: 1px solid #ddd;
+            }
+            .btn, .nav-links, .sample-dropdown, .action-buttons, .history-panel {
+                display: none !important;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .score-circle {
+                border-color: #333 !important;
+            }
+            .highlighted-text {
+                max-height: none;
+                background: #f5f5f5;
+            }
+            .indicators-list {
+                max-height: none;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -415,8 +753,9 @@
                 <p>Forensic Statement & Linguistic Analysis (FSLA)</p>
             </div>
             <nav class="nav-links">
-                <a href="/" class="active">Analyze Text</a>
-                <a href="/rules">Configure Rules</a>
+                <a href="/" class="active">Analyze</a>
+                <a href="/compare">Compare</a>
+                <a href="/rules">Rules</a>
             </nav>
         </header>
 
@@ -425,7 +764,18 @@
             <div class="panel input-panel">
                 <h2 style="display: flex; align-items: center; justify-content: space-between;">
                     <span><span class="icon">📝</span> Enter Text to Analyze</span>
-                    <button onclick="loadSampleText()" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(6, 182, 212, 0.2); border: 1px solid #06b6d4; color: #06b6d4; border-radius: 6px; cursor: pointer; font-weight: normal;">Load Sample</button>
+                    <div class="sample-dropdown">
+                        <button onclick="toggleSampleDropdown()" class="btn btn-small btn-secondary" style="background: rgba(6, 182, 212, 0.2); border-color: #06b6d4; color: #06b6d4;">
+                            Load Sample ▼
+                        </button>
+                        <div class="sample-dropdown-content" id="sampleDropdown">
+                            <a href="#" onclick="loadSample('insurance')">Insurance Claim</a>
+                            <a href="#" onclick="loadSample('hr')">HR Complaint</a>
+                            <a href="#" onclick="loadSample('witness')">Witness Statement</a>
+                            <a href="#" onclick="loadSample('corporate')">Corporate Earnings</a>
+                            <a href="#" onclick="loadSample('romance')">Romance Scam</a>
+                        </div>
+                    </div>
                 </h2>
                 <textarea id="inputText" placeholder="Paste the text you want to analyze here...
 
@@ -433,8 +783,8 @@ Examples of what you can analyze:
 • Insurance claims and statements
 • Interview transcripts
 • Corporate communications
-• Earnings call transcripts
-• Emails or messages
+• Witness statements
+• HR complaints
 • Any statement or narrative"></textarea>
                 <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeText()">
                     Analyze for Deception Indicators
@@ -459,8 +809,14 @@ Examples of what you can analyze:
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background: #bbf7d0; border: 1px solid #22c55e;"></div>
-                        Truthful Signal
+                        Truthful
                     </div>
+                </div>
+
+                <!-- History Panel -->
+                <div class="history-panel" id="historyPanel" style="display: none;">
+                    <h3 style="margin-top: 0;">Recent Analyses</h3>
+                    <div id="historyList"></div>
                 </div>
             </div>
 
@@ -484,30 +840,53 @@ Examples of what you can analyze:
                 <div class="results-panel" id="results">
                     <!-- Score Display -->
                     <div class="score-display">
-                        <div class="score-circle" id="scoreCircle">
-                            <span class="score-number" id="scoreNumber">0</span>
-                            <span class="score-label">/ 100</span>
+                        <div class="score-row">
+                            <div class="score-circle" id="scoreCircle">
+                                <span class="score-number" id="scoreNumber">0</span>
+                                <span class="score-label">/ 100</span>
+                            </div>
+                            <div class="score-info">
+                                <div class="risk-level" id="riskLevel">-</div>
+                                <div class="word-count" id="wordCount">0 words analyzed</div>
+                            </div>
                         </div>
-                        <div class="risk-level" id="riskLevel">-</div>
-                        <div class="word-count" id="wordCount">0 words analyzed</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-secondary" onclick="copyResults()">📋 Copy</button>
+                            <button class="btn btn-small btn-secondary" onclick="exportPDF()">📄 Export PDF</button>
+                            <button class="btn btn-small btn-secondary" onclick="window.print()">🖨️ Print</button>
+                        </div>
                     </div>
 
-                    <!-- Deception Trend Chart -->
-                    <h3 style="margin-bottom: 10px; color: #fff;">Deception Trend (Start → End)</h3>
-                    <div class="chart-container" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
-                        <canvas id="trendChart" height="120"></canvas>
+                    <!-- Charts Row -->
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Category Breakdown</div>
+                            <canvas id="categoryChart" height="160"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <div style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Deception Trend (Start → End)</div>
+                            <canvas id="trendChart" height="160"></canvas>
+                        </div>
                     </div>
+
+                    <!-- Red Flags Summary -->
+                    <h3>🚩 Red Flags Summary</h3>
+                    <div class="red-flags-list" id="redFlagsList"></div>
+
+                    <!-- Follow-up Questions -->
+                    <h3>❓ Suggested Follow-Up Questions</h3>
+                    <div class="questions-list" id="questionsList"></div>
 
                     <!-- Highlighted Text -->
-                    <h3 style="margin-bottom: 10px; color: #fff;">Analyzed Text</h3>
+                    <h3>📄 Analyzed Text</h3>
                     <div class="highlighted-text" id="highlightedText"></div>
 
                     <!-- Indicators -->
-                    <h3 style="margin-bottom: 10px; color: #fff;">Indicators Detected (<span id="indicatorCount">0</span>)</h3>
+                    <h3>🎯 Indicators Detected (<span id="indicatorCount">0</span>)</h3>
                     <div class="indicators-list" id="indicatorsList"></div>
 
                     <!-- Recommendations -->
-                    <h3 style="margin-bottom: 10px; color: #fff;">Recommendations</h3>
+                    <h3>💡 Recommendations</h3>
                     <div class="recommendations" id="recommendations"></div>
                 </div>
             </div>
@@ -519,251 +898,45 @@ Examples of what you can analyze:
         </footer>
     </div>
 
+    <!-- Indicator Detail Modal -->
+    <div class="modal-overlay" id="indicatorModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h3 id="modalTitle">Indicator Details</h3>
+            <div class="modal-section">
+                <div class="modal-section-title">Description</div>
+                <div class="modal-section-content" id="modalDescription"></div>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">Category</div>
+                <div class="modal-section-content" id="modalCategory"></div>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">Research Basis</div>
+                <div class="modal-section-content" id="modalResearch"></div>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">Matches Found</div>
+                <div class="modal-section-content" id="modalMatches" style="color: #ef4444; font-style: italic;"></div>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">Investigator Guidance</div>
+                <div class="modal-section-content" id="modalGuidance"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        async function analyzeText() {
-            const text = document.getElementById('inputText').value.trim();
-            const btn = document.getElementById('analyzeBtn');
-            const loading = document.getElementById('loading');
-            const results = document.getElementById('results');
-            const emptyState = document.getElementById('emptyState');
-
-            if (!text) {
-                alert('Please enter some text to analyze');
-                return;
-            }
-
-            // Show loading
-            btn.disabled = true;
-            btn.textContent = 'Analyzing...';
-            loading.classList.add('active');
-            results.classList.remove('active');
-            emptyState.style.display = 'none';
-
-            try {
-                const response = await fetch('/analyze', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ text }),
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                displayResults(data);
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while analyzing the text');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Analyze for Deception Indicators';
-                loading.classList.remove('active');
-            }
-        }
-
-        function displayResults(data) {
-            const results = document.getElementById('results');
-            results.classList.add('active');
-
-            // Score circle
-            const scoreCircle = document.getElementById('scoreCircle');
-            const scoreNumber = document.getElementById('scoreNumber');
-            const riskLevel = document.getElementById('riskLevel');
-            const wordCount = document.getElementById('wordCount');
-
-            scoreNumber.textContent = data.score;
-            scoreCircle.style.borderColor = data.risk_color;
-            riskLevel.textContent = `Risk Level: ${data.risk_level}`;
-            riskLevel.style.color = data.risk_color;
-            wordCount.textContent = `${data.word_count} words analyzed • ${data.indicators_count} indicators found`;
-
-            // Render trend chart
-            renderTrendChart(data.trend_data, data.risk_color);
-
-            // Highlighted text
-            document.getElementById('highlightedText').innerHTML = data.highlighted_html;
-
-            // Indicator count
-            document.getElementById('indicatorCount').textContent = data.indicators_count;
-
-            // Indicators list
-            const indicatorsList = document.getElementById('indicatorsList');
-            indicatorsList.innerHTML = '';
-
-            if (data.indicators.length === 0) {
-                indicatorsList.innerHTML = '<p style="color: #22c55e; text-align: center; padding: 20px;">No significant deception indicators detected.</p>';
-            } else {
-                data.indicators.forEach(ind => {
-                    let borderColor;
-                    if (ind.weight >= 1.5) borderColor = '#ef4444';
-                    else if (ind.weight >= 1.3) borderColor = '#f97316';
-                    else borderColor = '#eab308';
-
-                    const item = document.createElement('div');
-                    item.className = 'indicator-item';
-                    item.style.borderLeftColor = borderColor;
-
-                    // Style new indicators with cyan background
-                    if (ind.is_new) {
-                        item.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%)';
-                        item.style.borderColor = 'rgba(6, 182, 212, 0.3)';
-                        item.style.borderWidth = '1px';
-                        item.style.borderStyle = 'solid';
-                        item.style.borderLeftWidth = '4px';
-                        item.style.borderLeftStyle = 'solid';
-                    }
-
-                    const newBadge = ind.is_new ? '<span style="background: #06b6d4; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; font-weight: 600;">NEW</span>' : '';
-
-                    item.innerHTML = `
-                        <div class="indicator-header">
-                            <span class="indicator-name">${ind.name}${newBadge}</span>
-                            <span class="indicator-category">${ind.category}</span>
-                        </div>
-                        <div class="indicator-description">${ind.description}</div>
-                        <div class="indicator-matches">Found: "${ind.matches.join('", "')}"</div>
-                        <div class="indicator-contribution">Contribution to score: ${ind.weight < 0 ? '' : '+'}${ind.contribution}</div>
-                    `;
-                    indicatorsList.appendChild(item);
-                });
-            }
-
-            // Recommendations
-            const recommendationsEl = document.getElementById('recommendations');
-            recommendationsEl.innerHTML = '';
-
-            const icons = {
-                success: '✅',
-                warning: '⚠️',
-                danger: '🚨',
-                info: 'ℹ️'
-            };
-
-            data.recommendations.forEach(rec => {
-                const item = document.createElement('div');
-                item.className = `recommendation ${rec.type}`;
-                item.innerHTML = `
-                    <span class="recommendation-icon">${icons[rec.type]}</span>
-                    <span>${rec.text}</span>
-                `;
-                recommendationsEl.appendChild(item);
-            });
-        }
-
-        // Chart instance reference
+        let currentAnalysis = null;
         let trendChart = null;
+        let categoryChart = null;
 
-        function renderTrendChart(trendData, riskColor) {
-            const ctx = document.getElementById('trendChart').getContext('2d');
-
-            // Destroy existing chart if it exists
-            if (trendChart) {
-                trendChart.destroy();
-            }
-
-            // Create gradient fill
-            const gradient = ctx.createLinearGradient(0, 0, 0, 120);
-            gradient.addColorStop(0, riskColor + '80');
-            gradient.addColorStop(1, riskColor + '10');
-
-            trendChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: trendData.labels,
-                    datasets: [{
-                        label: 'Deception Intensity',
-                        data: trendData.values,
-                        borderColor: riskColor,
-                        backgroundColor: gradient,
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: riskColor,
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                title: function(context) {
-                                    return 'Position: ' + context[0].label;
-                                },
-                                label: function(context) {
-                                    const raw = trendData.raw_values[context.dataIndex];
-                                    return `Intensity: ${context.parsed.y.toFixed(0)}% (weight: ${raw})`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.05)'
-                            },
-                            ticks: {
-                                color: '#666',
-                                font: { size: 10 },
-                                maxTicksLimit: 10
-                            },
-                            title: {
-                                display: true,
-                                text: 'Text Position (Start → End)',
-                                color: '#888',
-                                font: { size: 11 }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.05)'
-                            },
-                            ticks: {
-                                color: '#666',
-                                font: { size: 10 },
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'Deception Intensity',
-                                color: '#888',
-                                font: { size: 11 }
-                            }
-                        }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    }
-                }
-            });
-        }
-
-        // Load sample text
-        function loadSampleText() {
-            const sampleText = `Claim Reference: HMI-2026-447821
+        // Sample texts
+        const sampleTexts = {
+            insurance: `Claim Reference: HMI-2026-447821
 Policy Number: PHH-9934-WALES-002
 Insurer: Heartland Mutual Insurance plc
 Date of Claim: 14 May 2026
@@ -787,16 +960,485 @@ Total: £55,650
 I have photographs of most items and can provide further documentation upon request. I would like this resolved as quickly as possible as my wife is very distressed.
 
 Signed: D. A. Shufflebottom
-Date: 14 May 2026`;
+Date: 14 May 2026`,
 
-            document.getElementById('inputText').value = sampleText;
+            hr: `HR Complaint Statement
+Date: 15 May 2026
+Employee: Sarah Mitchell, Marketing Coordinator
+
+Statement Regarding Workplace Incident
+
+I am writing to formally complain about my manager, David Thompson. I believe I have been treated unfairly over the past several months.
+
+To be honest, I'm not the kind of person who complains, but this has gone too far. People who know me will tell you I'm a team player. On or around March, I think, David started excluding me from important meetings. I would never make something like this up.
+
+There was this one time, maybe in early April, where something happened with a client presentation. The details are a bit fuzzy because it all happened so fast, but basically I was blamed for something that wasn't my fault. I believe David told senior management that the project failed because of me, but that's just not true.
+
+I suppose I should mention that other colleagues have noticed this too, although I can't remember exactly who said what. If I recall correctly, someone in the team mentioned they thought David was being unfair to me.
+
+I would like this matter resolved as quickly as possible as it's affecting my mental health and my family is very concerned.
+
+Sarah Mitchell`,
+
+            witness: `Police Statement - Witness Account
+Case Reference: MET/2026/05/78432
+Date: 12 May 2026
+Witness: Michael James Patterson
+
+Statement:
+
+I was walking home from the pub, I think it was around 11pm, maybe a bit later. I had only had a couple of drinks, nothing excessive. Anyway, I was walking down Elm Street when I heard something.
+
+The next thing I knew, there was some kind of commotion near the alley. I saw two individuals, or maybe three, I'm not entirely sure. One of them was definitely wearing dark clothing. They were doing something, I couldn't really see what exactly.
+
+Then someone ran past me. It happened so fast. I think they went left, towards the main road, but I'm not 100% certain. I would say they were medium height, average build. I didn't really get a good look at their face.
+
+I should mention that the streetlight on that corner has been broken for weeks, so visibility wasn't great. I stayed where I was for a moment because, well, you hear about these things and you don't want to get involved.
+
+After that, I went home and told my wife what happened. She said I should call the police, so I did the next morning.
+
+That's basically what happened.
+
+M. Patterson`,
+
+            corporate: `Q2 2026 Earnings Call Transcript (Excerpt)
+TechnoVation Inc.
+
+CEO James Crawford:
+"Thank you for joining us today. We are pleased to report what we believe represents solid performance for the quarter, despite some headwinds in the market.
+
+Our adjusted EBITDA, excluding one-time restructuring charges and certain non-recurring items, shows underlying strength in our core business. Going forward, we are exploring options to optimize our operational synergies and leverage our market position.
+
+I want to be clear - we remain committed to delivering shareholder value. The challenges we faced this quarter are temporary in nature. Our strategic initiatives are on track, and we are confident about the opportunities ahead.
+
+Regarding the product delays mentioned in the press, I think there may have been some miscommunication. What I would say is that our timeline has been adjusted to ensure we deliver a premium experience to our customers. We are not concerned about the competitive landscape.
+
+Our team has been working tirelessly, and I believe we have the right strategy in place. The fundamentals of our business remain strong, and we are well-positioned to capitalize on emerging market trends.
+
+We appreciate your continued support and confidence in TechnoVation."`,
+
+            romance: `Message Thread - Dating App
+From: Alexander (Profile: Successful Entrepreneur, 45)
+
+Day 3:
+"I know we've only just met, but I feel such an incredible connection with you. You're so special - I've never felt this way about anyone before. It must be fate that brought us together. You're the only one who truly understands me."
+
+Day 7:
+"My darling, I think about you constantly. You're absolutely perfect in every way. I know this might sound crazy, but I believe you're my soulmate. No one has ever made me feel this way."
+
+Day 12:
+"I have some urgent news. There's an amazing investment opportunity that just came up - it won't last long and we need to act now. I would never ask this normally, but I've had some unexpected issues with my bank account while traveling.
+
+I promise I'll pay you back as soon as I return. This is time sensitive - the opportunity closes tomorrow. I trust you completely, and I hope you trust me too. This could be our future together.
+
+Please don't wait - just transfer what you can and I'll explain everything when we meet. You're the only person I can turn to right now."`,
+        };
+
+        // Research basis for indicators
+        const researchBasis = {
+            'Insurance': 'DDL proprietary methodology based on analysis of confirmed fraud cases',
+            'CBCA': 'Criteria-Based Content Analysis (Steller & Köhnken, 1989) - validated in forensic contexts',
+            'Reality': 'Reality Monitoring theory (Johnson & Raye, 1981) - distinguishes experienced vs imagined events',
+            'Pronouns': 'Linguistic distancing research (Newman et al., 2003; Pennebaker, 2011)',
+            'Hedging': 'Commitment analysis in deception research (DePaulo et al., 2003)',
+            'Denials': 'Statement analysis methodology (Adams, 1996; Sapir SCAN technique)',
+            'Temporal': 'Cognitive load theory and memory research',
+            'Emotional': 'Duping delight and emotional leakage (Ekman, 1985)',
+            'Corporate': 'DDL proprietary - financial communication analysis',
+            'Manipulation': 'DDL proprietary - social engineering patterns',
+            'Structure': 'SCAN methodology (Sapir) and narrative analysis',
+            'NLP': 'Computational linguistics and deception detection research'
+        };
+
+        // Investigator guidance
+        const investigatorGuidance = {
+            'Pronoun Distancing': 'Ask the subject to describe events specifically from their own perspective. Note any continued avoidance of first-person pronouns.',
+            'Excessive Hedging': 'Press for definitive statements. Ask "What do you KNOW for certain?" rather than accepting qualified responses.',
+            'Weak Denial': 'Request a specific denial in first person, past tense, addressing the exact allegation.',
+            'Overly Specific Alibi': 'Ask the subject to describe events in reverse order. Fabricated details are harder to recall backwards.',
+            'Pre-emptive Explanation': 'Do not accept unsolicited explanations. Ask "How do you know that?" for any assumptions.',
+            'Value Inflation Signals': 'Request original purchase documentation, bank statements, or independent valuations.',
+            'Lacks Sensory Details': 'Ask the subject to close their eyes and describe what they heard, smelled, and felt.',
+            'Love Bombing': 'This is a manipulation red flag. Recommend slowing down and independent verification of all claims.'
+        };
+
+        function toggleSampleDropdown() {
+            document.getElementById('sampleDropdown').classList.toggle('show');
         }
 
-        // Allow Ctrl+Enter to submit
-        document.getElementById('inputText').addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                analyzeText();
+        // Close dropdown when clicking outside
+        window.onclick = function(e) {
+            if (!e.target.matches('.sample-dropdown button')) {
+                document.getElementById('sampleDropdown').classList.remove('show');
             }
+        }
+
+        function loadSample(type) {
+            document.getElementById('inputText').value = sampleTexts[type] || '';
+            document.getElementById('sampleDropdown').classList.remove('show');
+        }
+
+        async function analyzeText() {
+            const text = document.getElementById('inputText').value.trim();
+            const btn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!text) {
+                alert('Please enter some text to analyze');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Analyzing...';
+            loading.classList.add('active');
+            results.classList.remove('active');
+            emptyState.style.display = 'none';
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text }),
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                currentAnalysis = { ...data, text, timestamp: new Date().toISOString() };
+                displayResults(data);
+                saveToHistory(text, data);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while analyzing the text');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Analyze for Deception Indicators';
+                loading.classList.remove('active');
+            }
+        }
+
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            results.classList.add('active');
+
+            // Score display
+            document.getElementById('scoreNumber').textContent = data.score;
+            document.getElementById('scoreCircle').style.borderColor = data.risk_color;
+            document.getElementById('riskLevel').textContent = `Risk Level: ${data.risk_level}`;
+            document.getElementById('riskLevel').style.color = data.risk_color;
+            document.getElementById('wordCount').textContent = `${data.word_count} words • ${data.indicators_count} indicators`;
+
+            // Render charts
+            renderCategoryChart(data.category_breakdown);
+            renderTrendChart(data.trend_data, data.risk_color);
+
+            // Red flags
+            const redFlagsList = document.getElementById('redFlagsList');
+            if (data.red_flags && data.red_flags.length > 0) {
+                redFlagsList.innerHTML = data.red_flags.map(flag => `
+                    <div class="red-flag-item">
+                        <span class="red-flag-icon">⚠️</span>
+                        <span>${flag}</span>
+                    </div>
+                `).join('');
+            } else {
+                redFlagsList.innerHTML = '<div style="color: #22c55e; padding: 10px;">No significant red flags detected.</div>';
+            }
+
+            // Follow-up questions
+            const questionsList = document.getElementById('questionsList');
+            if (data.follow_up_questions && data.follow_up_questions.length > 0) {
+                questionsList.innerHTML = data.follow_up_questions.map(q => `
+                    <div class="question-item">
+                        <div class="question-text">"${q.question}"</div>
+                        <div class="question-rationale">💡 ${q.rationale}</div>
+                    </div>
+                `).join('');
+            } else {
+                questionsList.innerHTML = '<div style="color: #888; padding: 10px;">No specific follow-up questions suggested.</div>';
+            }
+
+            // Highlighted text
+            document.getElementById('highlightedText').innerHTML = data.highlighted_html;
+
+            // Indicators
+            document.getElementById('indicatorCount').textContent = data.indicators_count;
+            const indicatorsList = document.getElementById('indicatorsList');
+
+            if (data.indicators.length === 0) {
+                indicatorsList.innerHTML = '<p style="color: #22c55e; text-align: center; padding: 20px;">No significant deception indicators detected.</p>';
+            } else {
+                indicatorsList.innerHTML = data.indicators.map(ind => {
+                    let borderColor = ind.weight >= 1.5 ? '#ef4444' : ind.weight >= 1.3 ? '#f97316' : '#eab308';
+                    const isNew = ind.is_new || false;
+                    const newBadge = isNew ? '<span style="background: #06b6d4; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">NEW</span>' : '';
+                    const newStyle = isNew ? 'background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%); border-color: rgba(6, 182, 212, 0.3);' : '';
+
+                    return `
+                        <div class="indicator-item" style="border-left-color: ${borderColor}; ${newStyle}" onclick="showIndicatorDetail('${ind.name}', '${ind.description.replace(/'/g, "\\'")}', '${ind.category}', '${ind.matches.join(", ").replace(/'/g, "\\'")}')">
+                            <div class="indicator-header">
+                                <span class="indicator-name">${ind.name}${newBadge}</span>
+                                <span class="indicator-category">${ind.category}</span>
+                            </div>
+                            <div class="indicator-description">${ind.description}</div>
+                            <div class="indicator-matches">Found: "${ind.matches.slice(0, 3).join('", "')}"${ind.matches.length > 3 ? '...' : ''}</div>
+                            <div class="indicator-contribution">Contribution: ${ind.weight < 0 ? '' : '+'}${ind.contribution}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Recommendations
+            const icons = { success: '✅', warning: '⚠️', danger: '🚨', info: 'ℹ️' };
+            document.getElementById('recommendations').innerHTML = data.recommendations.map(rec => `
+                <div class="recommendation ${rec.type}">
+                    <span class="recommendation-icon">${icons[rec.type]}</span>
+                    <span>${rec.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderCategoryChart(categoryData) {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+
+            if (categoryChart) categoryChart.destroy();
+
+            if (!categoryData || categoryData.labels.length === 0) {
+                ctx.fillStyle = '#666';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('No data', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
+
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryData.labels,
+                    datasets: [{
+                        data: categoryData.values,
+                        backgroundColor: categoryData.colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#888',
+                                font: { size: 10 },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const count = categoryData.counts[context.dataIndex];
+                                    return `${context.label}: ${context.parsed} pts (${count} matches)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTrendChart(trendData, riskColor) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+
+            if (trendChart) trendChart.destroy();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 160);
+            gradient.addColorStop(0, riskColor + '80');
+            gradient.addColorStop(1, riskColor + '10');
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: trendData.labels,
+                    datasets: [{
+                        data: trendData.values,
+                        borderColor: riskColor,
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#666', font: { size: 9 }, maxTicksLimit: 5 }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#666', font: { size: 9 }, callback: v => v + '%' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showIndicatorDetail(name, description, category, matches) {
+            document.getElementById('modalTitle').textContent = name;
+            document.getElementById('modalDescription').textContent = description;
+            document.getElementById('modalCategory').textContent = category;
+            document.getElementById('modalResearch').textContent = researchBasis[category] || 'General deception detection research';
+            document.getElementById('modalMatches').textContent = matches;
+            document.getElementById('modalGuidance').textContent = investigatorGuidance[name] || 'Follow up with specific, open-ended questions about the flagged content.';
+            document.getElementById('indicatorModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('indicatorModal').classList.remove('show');
+        }
+
+        function copyResults() {
+            if (!currentAnalysis) return;
+
+            const text = `DECEPTION DETECTION ANALYSIS REPORT
+=====================================
+Risk Score: ${currentAnalysis.score}/100 (${currentAnalysis.risk_level})
+Words Analyzed: ${currentAnalysis.word_count}
+Indicators Found: ${currentAnalysis.indicators_count}
+
+RED FLAGS:
+${currentAnalysis.red_flags.map(f => '• ' + f).join('\n')}
+
+FOLLOW-UP QUESTIONS:
+${currentAnalysis.follow_up_questions.map(q => '• ' + q.question).join('\n')}
+
+INDICATORS DETECTED:
+${currentAnalysis.indicators.map(i => `• ${i.name} (${i.category}): ${i.matches.join(', ')}`).join('\n')}
+
+Generated by Deception Detection Lab - ${new Date().toLocaleString()}`;
+
+            navigator.clipboard.writeText(text).then(() => showToast('Results copied to clipboard'));
+        }
+
+        function exportPDF() {
+            if (!currentAnalysis) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 20;
+
+            doc.setFontSize(18);
+            doc.text('Deception Detection Analysis Report', 20, y);
+            y += 15;
+
+            doc.setFontSize(12);
+            doc.text(`Risk Score: ${currentAnalysis.score}/100 (${currentAnalysis.risk_level})`, 20, y);
+            y += 8;
+            doc.text(`Words Analyzed: ${currentAnalysis.word_count}`, 20, y);
+            y += 8;
+            doc.text(`Indicators Found: ${currentAnalysis.indicators_count}`, 20, y);
+            y += 15;
+
+            doc.setFontSize(14);
+            doc.text('Red Flags:', 20, y);
+            y += 8;
+            doc.setFontSize(10);
+            currentAnalysis.red_flags.forEach(flag => {
+                const lines = doc.splitTextToSize('• ' + flag, 170);
+                doc.text(lines, 20, y);
+                y += lines.length * 5 + 3;
+                if (y > 270) { doc.addPage(); y = 20; }
+            });
+
+            y += 10;
+            doc.setFontSize(14);
+            doc.text('Indicators Detected:', 20, y);
+            y += 8;
+            doc.setFontSize(10);
+            currentAnalysis.indicators.slice(0, 10).forEach(ind => {
+                doc.text(`• ${ind.name} (${ind.category})`, 20, y);
+                y += 6;
+                if (y > 270) { doc.addPage(); y = 20; }
+            });
+
+            doc.setFontSize(8);
+            doc.text(`Generated by Deception Detection Lab - ${new Date().toLocaleString()}`, 20, 285);
+
+            doc.save('deception-analysis-report.pdf');
+            showToast('PDF exported');
+        }
+
+        function saveToHistory(text, data) {
+            const history = JSON.parse(localStorage.getItem('ddl_history') || '[]');
+            history.unshift({
+                id: Date.now(),
+                preview: text.substring(0, 50) + '...',
+                score: data.score,
+                risk_level: data.risk_level,
+                risk_color: data.risk_color,
+                timestamp: new Date().toISOString(),
+                text: text
+            });
+            localStorage.setItem('ddl_history', JSON.stringify(history.slice(0, 10)));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('ddl_history') || '[]');
+            const panel = document.getElementById('historyPanel');
+            const list = document.getElementById('historyList');
+
+            if (history.length === 0) {
+                panel.style.display = 'none';
+                return;
+            }
+
+            panel.style.display = 'block';
+            list.innerHTML = history.map(item => `
+                <div class="history-item" onclick="loadFromHistory(${item.id})">
+                    <div class="history-item-info">
+                        <div class="history-item-title">${item.preview}</div>
+                        <div class="history-item-meta">${new Date(item.timestamp).toLocaleDateString()}</div>
+                    </div>
+                    <div class="history-item-score" style="background: ${item.risk_color}20; color: ${item.risk_color};">${item.score}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadFromHistory(id) {
+            const history = JSON.parse(localStorage.getItem('ddl_history') || '[]');
+            const item = history.find(h => h.id === id);
+            if (item) {
+                document.getElementById('inputText').value = item.text;
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', renderHistory);
+
+        // Keyboard shortcut
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') analyzeText();
         });
     </script>
 </body>

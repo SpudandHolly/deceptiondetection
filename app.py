@@ -858,6 +858,15 @@ class DeceptionDetector:
         # Generate recommendations
         recommendations = self._generate_recommendations(indicators_found, risk_level)
 
+        # Generate category breakdown for pie chart
+        category_breakdown = self._generate_category_breakdown(indicators_found)
+
+        # Generate red flags summary
+        red_flags = self._generate_red_flags(indicators_found, all_matches)
+
+        # Generate follow-up questions
+        follow_up_questions = self._generate_follow_up_questions(indicators_found)
+
         return {
             'score': score,
             'risk_level': risk_level,
@@ -867,7 +876,10 @@ class DeceptionDetector:
             'indicators': indicators_found,
             'highlighted_html': highlighted_html,
             'recommendations': recommendations,
-            'trend_data': trend_data
+            'trend_data': trend_data,
+            'category_breakdown': category_breakdown,
+            'red_flags': red_flags,
+            'follow_up_questions': follow_up_questions
         }
 
     def _generate_highlighted_html(self, text: str, matches: list) -> str:
@@ -1059,6 +1071,209 @@ class DeceptionDetector:
 
         return recommendations
 
+    def _generate_category_breakdown(self, indicators: list) -> dict:
+        """Generate category breakdown for pie chart."""
+        category_counts = {}
+        category_weights = {}
+
+        for ind in indicators:
+            cat = ind['category']
+            if cat not in category_counts:
+                category_counts[cat] = 0
+                category_weights[cat] = 0
+            category_counts[cat] += 1
+            category_weights[cat] += ind['contribution']
+
+        # Sort by weight contribution
+        sorted_cats = sorted(category_weights.items(), key=lambda x: x[1], reverse=True)
+
+        # Category colors
+        colors = {
+            'Insurance': '#ef4444',
+            'Pronouns': '#f97316',
+            'Temporal': '#eab308',
+            'Hedging': '#84cc16',
+            'Denials': '#22c55e',
+            'Emotional': '#14b8a6',
+            'Details': '#06b6d4',
+            'Commitment': '#3b82f6',
+            'Narrative': '#8b5cf6',
+            'Sensitivity': '#a855f7',
+            'Corporate': '#ec4899',
+            'Manipulation': '#f43f5e',
+            'CBCA': '#06b6d4',
+            'Reality': '#10b981',
+            'Structure': '#6366f1',
+            'NLP': '#8b5cf6'
+        }
+
+        return {
+            'labels': [cat for cat, _ in sorted_cats],
+            'values': [round(weight, 1) for _, weight in sorted_cats],
+            'counts': [category_counts[cat] for cat, _ in sorted_cats],
+            'colors': [colors.get(cat, '#666666') for cat, _ in sorted_cats]
+        }
+
+    def _generate_red_flags(self, indicators: list, matches: list) -> list:
+        """Generate concise red flag bullet points."""
+        red_flags = []
+
+        # Get unique indicator names with high contribution
+        high_contrib = [ind for ind in indicators if ind['contribution'] > 1.0]
+
+        for ind in high_contrib[:8]:  # Top 8 red flags
+            # Create contextual red flag description
+            match_sample = ind['matches'][0] if ind['matches'] else ''
+
+            if ind['category'] == 'Insurance':
+                if 'Alibi' in ind['name']:
+                    red_flags.append(f"Unusually specific alibi details provided unprompted: \"{match_sample[:50]}...\"")
+                elif 'Pre-emptive' in ind['name']:
+                    red_flags.append(f"Pre-emptively explains evidence gaps before being questioned")
+                elif 'Urgency' in ind['name']:
+                    red_flags.append(f"Pushes for rapid claim resolution")
+                elif 'Value' in ind['name']:
+                    red_flags.append(f"Value inflation signals detected (luxury locations, heirlooms)")
+                elif 'Documentation' in ind['name']:
+                    red_flags.append(f"Convenient documentation claims that are hard to verify")
+                elif 'Emotional' in ind['name']:
+                    red_flags.append(f"Uses emotional leverage (family distress) in formal claim")
+                else:
+                    red_flags.append(f"{ind['name']}: {ind['description']}")
+
+            elif ind['category'] == 'Pronouns':
+                if 'Distancing' in ind['name']:
+                    red_flags.append(f"Subject distances self using third-person or passive voice during key events")
+                elif 'Shift' in ind['name']:
+                    red_flags.append(f"Pronoun shifts from 'I' to 'we/they' mid-narrative")
+                else:
+                    red_flags.append(f"{ind['name']}: found \"{match_sample[:40]}\"")
+
+            elif ind['category'] == 'Hedging':
+                red_flags.append(f"Excessive hedging/qualifiers undermine statement certainty")
+
+            elif ind['category'] == 'Denials':
+                red_flags.append(f"Non-specific denial that doesn't directly address allegation")
+
+            elif ind['category'] == 'Manipulation':
+                red_flags.append(f"Manipulation tactic detected: {ind['name'].lower()}")
+
+            elif ind['category'] == 'CBCA':
+                if 'Logical' in ind['name']:
+                    red_flags.append(f"Logical inconsistencies or contradictions in narrative")
+                elif 'Linear' in ind['name']:
+                    red_flags.append(f"Overly structured narrative - authentic accounts typically jump around")
+                else:
+                    red_flags.append(f"CBCA concern: {ind['description']}")
+
+            elif ind['category'] == 'Reality':
+                if 'Sensory' in ind['name'] and ind['weight'] > 0:
+                    red_flags.append(f"Lacks sensory details (smell, sound, touch) expected in genuine memory")
+                elif 'Cognitive' in ind['name']:
+                    red_flags.append(f"Excessive cognitive operations ('I thought', 'I realized') suggest construction")
+                else:
+                    red_flags.append(f"{ind['name']}: {ind['description']}")
+
+            else:
+                red_flags.append(f"{ind['name']}: \"{match_sample[:40]}{'...' if len(match_sample) > 40 else ''}\"")
+
+        return red_flags
+
+    def _generate_follow_up_questions(self, indicators: list) -> list:
+        """Generate suggested follow-up questions based on indicators found."""
+        questions = []
+        indicator_names = {ind['name'] for ind in indicators}
+        categories = {ind['category'] for ind in indicators}
+
+        # Insurance-specific questions
+        if 'Insurance' in categories:
+            if 'Overly Specific Alibi' in indicator_names:
+                questions.append({
+                    'question': "Can you describe the evening in reverse order, starting from when you discovered the break-in?",
+                    'rationale': "Fabricated alibis are harder to recall backwards"
+                })
+                questions.append({
+                    'question': "Who else was at the quiz night? Can you provide contact details for verification?",
+                    'rationale': "Tests willingness to have alibi independently verified"
+                })
+
+            if 'Pre-emptive Explanation' in indicator_names:
+                questions.append({
+                    'question': "How do you know the burglars were professionals?",
+                    'rationale': "Challenges unsolicited characterization of perpetrators"
+                })
+                questions.append({
+                    'question': "Can you provide the police incident number and attending officer's name?",
+                    'rationale': "Verifies formal report was made"
+                })
+
+            if 'Value Inflation Signals' in indicator_names:
+                questions.append({
+                    'question': "Do you have the original purchase receipts, bank statements, or credit card records for these items?",
+                    'rationale': "Tests ability to substantiate claimed values"
+                })
+                questions.append({
+                    'question': "When was the last independent valuation of the antique items?",
+                    'rationale': "Challenges unverified value claims"
+                })
+
+            if 'Claim Urgency' in indicator_names:
+                questions.append({
+                    'question': "Is there a specific reason you need this resolved quickly?",
+                    'rationale': "Explores motivation behind urgency"
+                })
+
+        # Pronoun-related questions
+        if 'Pronoun Distancing' in indicator_names or 'First Person Dropout' in indicator_names:
+            questions.append({
+                'question': "I notice you said 'the window was broken' - can you tell me exactly what YOU saw and did when you arrived home?",
+                'rationale': "Re-centers narrative on subject's direct experience"
+            })
+
+        # Hedging-related questions
+        if 'Excessive Hedging' in indicator_names or 'Qualifier Stacking' in indicator_names:
+            questions.append({
+                'question': "You said you 'think' or 'believe' several times - can you tell me what you KNOW for certain?",
+                'rationale': "Pushes for definitive statements"
+            })
+
+        # Denial-related questions
+        if 'Weak Denial' in indicator_names or 'Non-Denial Denial' in indicator_names:
+            questions.append({
+                'question': "I need a direct answer: Did you [specific allegation]? Yes or no.",
+                'rationale': "Forces specific denial rather than character defense"
+            })
+
+        # Memory/detail questions
+        if 'Lack of Detail' in indicator_names or 'Lacks Sensory Details' in indicator_names:
+            questions.append({
+                'question': "Close your eyes and picture the scene. What did you hear? What did you smell? How did you feel physically?",
+                'rationale': "Genuine memories contain multi-sensory details"
+            })
+
+        # CBCA-related questions
+        if 'CBCA' in categories:
+            if 'No Direct Quotes' in indicator_names:
+                questions.append({
+                    'question': "Did anyone say anything to you? Can you remember their exact words?",
+                    'rationale': "Reproduced dialogue is a truthfulness indicator"
+                })
+
+            if 'Overly Linear Narrative' in indicator_names:
+                questions.append({
+                    'question': "Is there anything you forgot to mention, or anything that happened out of sequence?",
+                    'rationale': "Authentic accounts often have corrections and insertions"
+                })
+
+        # Manipulation questions
+        if 'Manipulation' in categories:
+            questions.append({
+                'question': "I'd like to take some time to verify these details. Can we schedule a follow-up in a few days?",
+                'rationale': "Removes artificial urgency"
+            })
+
+        return questions[:6]  # Return top 6 most relevant questions
+
 
 # Initialize detector
 detector = DeceptionDetector()
@@ -1070,6 +1285,11 @@ custom_weights = {}
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/compare')
+def compare():
+    return render_template('compare.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])

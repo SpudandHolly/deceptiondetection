@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Statements - Deception Detection Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        header h1 span {
+            color: #ef4444;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: #888;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1000px) {
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-label {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: auto;
+        }
+
+        .panel-a .panel-label {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .panel-b .panel-label {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .compare-actions {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Results */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 1000px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .result-panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 2px solid;
+        }
+
+        .result-panel-a {
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .result-panel-b {
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .score-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 4px solid;
+        }
+
+        .score-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .score-info h3 {
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .score-meta {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .indicators-summary {
+            margin-top: 15px;
+        }
+
+        .indicator-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+        }
+
+        .indicator-row:last-child {
+            border-bottom: none;
+        }
+
+        .indicator-name {
+            color: #e0e0e0;
+        }
+
+        .indicator-count {
+            color: #888;
+        }
+
+        .only-in {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+
+        /* Comparison Summary */
+        .comparison-summary {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 30px;
+        }
+
+        .comparison-summary h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-card {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .summary-card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .summary-card-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .diff-positive {
+            color: #ef4444;
+        }
+
+        .diff-negative {
+            color: #22c55e;
+        }
+
+        .unique-indicators {
+            margin-top: 20px;
+        }
+
+        .unique-indicators h3 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .unique-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .unique-tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .unique-tag-a {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .unique-tag-b {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Deception <span>Detection</span> Lab</h1>
+            <nav class="nav-links">
+                <a href="/">Analyze</a>
+                <a href="/compare" class="active">Compare</a>
+                <a href="/rules">Rules</a>
+            </nav>
+        </header>
+
+        <div class="compare-grid">
+            <div class="panel panel-a">
+                <h2>
+                    <span>📄 Statement A</span>
+                    <span class="panel-label">Original / First</span>
+                </h2>
+                <textarea id="textA" placeholder="Paste the first statement here...
+
+Examples:
+• Initial insurance claim
+• First witness account
+• Original statement"></textarea>
+            </div>
+
+            <div class="panel panel-b">
+                <h2>
+                    <span>📄 Statement B</span>
+                    <span class="panel-label">Follow-up / Second</span>
+                </h2>
+                <textarea id="textB" placeholder="Paste the second statement here...
+
+Examples:
+• Follow-up claim
+• Second witness account
+• Revised statement"></textarea>
+            </div>
+        </div>
+
+        <div class="compare-actions">
+            <button class="btn btn-primary" id="compareBtn" onclick="compareTexts()">
+                Compare Statements
+            </button>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <div class="icon">⚖️</div>
+            <p>Enter two statements and click "Compare" to see side-by-side analysis</p>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div class="results-grid">
+                <div class="result-panel result-panel-a" id="resultA"></div>
+                <div class="result-panel result-panel-b" id="resultB"></div>
+            </div>
+
+            <div class="comparison-summary" id="comparisonSummary"></div>
+        </div>
+
+        <footer>
+            Based on Forensic Statement & Linguistic Analysis (FSLA) methodology<br>
+            Powered by <a href="https://www.ddlltd.com" target="_blank">Deception Detection Lab</a>
+        </footer>
+    </div>
+
+    <script>
+        async function compareTexts() {
+            const textA = document.getElementById('textA').value.trim();
+            const textB = document.getElementById('textB').value.trim();
+            const btn = document.getElementById('compareBtn');
+
+            if (!textA || !textB) {
+                alert('Please enter both statements to compare');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Analyzing...';
+
+            try {
+                // Analyze both texts
+                const [responseA, responseB] = await Promise.all([
+                    fetch('/analyze', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: textA })
+                    }),
+                    fetch('/analyze', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: textB })
+                    })
+                ]);
+
+                const dataA = await responseA.json();
+                const dataB = await responseB.json();
+
+                if (dataA.error || dataB.error) {
+                    alert(dataA.error || dataB.error);
+                    return;
+                }
+
+                displayComparison(dataA, dataB);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during comparison');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Compare Statements';
+            }
+        }
+
+        function displayComparison(dataA, dataB) {
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            // Get indicator names
+            const indicatorsA = new Set(dataA.indicators.map(i => i.name));
+            const indicatorsB = new Set(dataB.indicators.map(i => i.name));
+            const onlyInA = [...indicatorsA].filter(i => !indicatorsB.has(i));
+            const onlyInB = [...indicatorsB].filter(i => !indicatorsA.has(i));
+            const inBoth = [...indicatorsA].filter(i => indicatorsB.has(i));
+
+            // Render result panels
+            document.getElementById('resultA').innerHTML = renderResultPanel(dataA, 'A', onlyInA);
+            document.getElementById('resultB').innerHTML = renderResultPanel(dataB, 'B', onlyInB);
+
+            // Render comparison summary
+            const scoreDiff = dataB.score - dataA.score;
+            const diffClass = scoreDiff > 0 ? 'diff-positive' : scoreDiff < 0 ? 'diff-negative' : '';
+            const diffText = scoreDiff > 0 ? `+${scoreDiff}` : scoreDiff.toString();
+
+            document.getElementById('comparisonSummary').innerHTML = `
+                <h2>📊 Comparison Summary</h2>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-card-value" style="color: ${dataA.risk_color};">${dataA.score}</div>
+                        <div class="summary-card-label">Statement A Score</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-value" style="color: ${dataB.risk_color};">${dataB.score}</div>
+                        <div class="summary-card-label">Statement B Score</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-value ${diffClass}">${diffText}</div>
+                        <div class="summary-card-label">Score Difference</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-value">${inBoth.length}</div>
+                        <div class="summary-card-label">Common Indicators</div>
+                    </div>
+                </div>
+
+                ${onlyInA.length > 0 ? `
+                <div class="unique-indicators">
+                    <h3>🔵 Only in Statement A (${onlyInA.length})</h3>
+                    <div class="unique-list">
+                        ${onlyInA.map(i => `<span class="unique-tag unique-tag-a">${i}</span>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+
+                ${onlyInB.length > 0 ? `
+                <div class="unique-indicators">
+                    <h3>🟣 Only in Statement B (${onlyInB.length})</h3>
+                    <div class="unique-list">
+                        ${onlyInB.map(i => `<span class="unique-tag unique-tag-b">${i}</span>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+
+                ${inBoth.length > 0 ? `
+                <div class="unique-indicators">
+                    <h3>⚪ Present in Both (${inBoth.length})</h3>
+                    <div class="unique-list">
+                        ${inBoth.map(i => `<span class="unique-tag" style="background: rgba(255,255,255,0.1); color: #888;">${i}</span>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        function renderResultPanel(data, label, uniqueIndicators) {
+            const uniqueSet = new Set(uniqueIndicators);
+
+            return `
+                <div class="score-header">
+                    <div class="score-circle" style="border-color: ${data.risk_color};">
+                        <span class="score-number">${data.score}</span>
+                        <span class="score-label">/ 100</span>
+                    </div>
+                    <div class="score-info">
+                        <h3>Statement ${label}</h3>
+                        <div class="score-meta" style="color: ${data.risk_color};">${data.risk_level}</div>
+                        <div class="score-meta">${data.word_count} words • ${data.indicators_count} indicators</div>
+                    </div>
+                </div>
+
+                <div class="indicators-summary">
+                    <h4 style="color: #fff; margin-bottom: 10px; font-size: 0.9rem;">Top Indicators</h4>
+                    ${data.indicators.slice(0, 8).map(ind => `
+                        <div class="indicator-row">
+                            <span class="indicator-name">
+                                ${ind.name}
+                                ${uniqueSet.has(ind.name) ? '<span class="only-in">UNIQUE</span>' : ''}
+                            </span>
+                            <span class="indicator-count">${ind.count} matches</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
