@@ -520,16 +520,19 @@ class DeceptionDetector:
         for match in filtered_matches:
             weight = match['weight']
             if weight >= 1.5:
-                color = "#fecaca"  # red-200
+                bg_color = "#fecaca"  # red-200
                 border = "#ef4444"  # red-500
+                text_color = "#991b1b"  # red-800
             elif weight >= 1.3:
-                color = "#fed7aa"  # orange-200
+                bg_color = "#fed7aa"  # orange-200
                 border = "#f97316"  # orange-500
+                text_color = "#9a3412"  # orange-800
             else:
-                color = "#fef08a"  # yellow-200
+                bg_color = "#fef08a"  # yellow-200
                 border = "#eab308"  # yellow-500
+                text_color = "#854d0e"  # yellow-800
 
-            highlighted = f'<span class="highlight" style="background-color: {color}; border-bottom: 2px solid {border}; padding: 1px 3px; border-radius: 3px; cursor: help;" title="{match["indicator"]} ({match["category"]})">{match["text"]}</span>'
+            highlighted = f'<span class="highlight" style="background-color: {bg_color}; color: {text_color}; border-bottom: 2px solid {border}; padding: 2px 4px; border-radius: 3px; cursor: help; font-weight: 500;" title="{match["indicator"]} ({match["category"]})">{match["text"]}</span>'
             result = result[:match['start']] + highlighted + result[match['end']:]
 
         return result.replace('\n', '<br>')
