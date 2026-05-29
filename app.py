@@ -806,8 +806,15 @@ class DeceptionDetector:
                     })
 
             if matches:
-                occurrence_rate = (len(matches) / max(word_count, 1)) * 100
-                weighted_score = min(occurrence_rate * indicator.weight, 10)
+                # Score based on match count and indicator weight
+                # Each match contributes based on weight, with diminishing returns
+                match_count = len(matches)
+                base_contribution = min(match_count, 5) * indicator.weight * 2
+                # Bonus for multiple matches (up to 3 extra points)
+                if match_count > 1:
+                    base_contribution += min(match_count - 1, 3) * 0.5
+
+                weighted_score = base_contribution
                 total_weight += weighted_score
 
                 all_matches.extend(match_positions)
@@ -823,14 +830,26 @@ class DeceptionDetector:
                     'is_new': indicator.is_new
                 })
 
-        # Calculate score
-        base_score = min(total_weight * 2, 100)
-        if word_count > 500:
-            base_score *= 0.8
-        elif word_count < 50:
-            base_score *= 1.2
+        # Calculate score - scale total weight to 0-100
+        # Typical deceptive text might have 5-15 indicators triggered
+        # Each indicator contributes roughly 2-6 points on average
+        # Target: 5 indicators = ~25 score, 10 indicators = ~50, 15+ = ~75+
 
-        score = round(min(max(base_score, 0), 100), 1)
+        num_indicators = len(indicators_found)
+        if num_indicators == 0:
+            score = 0.0
+        else:
+            # Base score from weights
+            base_score = total_weight
+
+            # Bonus for having multiple different indicators (breadth of deception signals)
+            indicator_diversity_bonus = min(num_indicators * 1.5, 15)
+            base_score += indicator_diversity_bonus
+
+            # Scale to 100 - cap at 100
+            score = min(base_score, 100)
+
+        score = round(max(score, 0), 2)
 
         # Determine risk level
         if score < 20:
