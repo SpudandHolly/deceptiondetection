@@ -608,14 +608,27 @@ Examples of what you can analyze:
                     const item = document.createElement('div');
                     item.className = 'indicator-item';
                     item.style.borderLeftColor = borderColor;
+
+                    // Style new indicators with cyan background
+                    if (ind.is_new) {
+                        item.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%)';
+                        item.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+                        item.style.borderWidth = '1px';
+                        item.style.borderStyle = 'solid';
+                        item.style.borderLeftWidth = '4px';
+                        item.style.borderLeftStyle = 'solid';
+                    }
+
+                    const newBadge = ind.is_new ? '<span style="background: #06b6d4; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; font-weight: 600;">NEW</span>' : '';
+
                     item.innerHTML = `
                         <div class="indicator-header">
-                            <span class="indicator-name">${ind.name}</span>
+                            <span class="indicator-name">${ind.name}${newBadge}</span>
                             <span class="indicator-category">${ind.category}</span>
                         </div>
                         <div class="indicator-description">${ind.description}</div>
                         <div class="indicator-matches">Found: "${ind.matches.join('", "')}"</div>
-                        <div class="indicator-contribution">Contribution to score: +${ind.contribution}</div>
+                        <div class="indicator-contribution">Contribution to score: ${ind.weight < 0 ? '' : '+'}${ind.contribution}</div>
                     `;
                     indicatorsList.appendChild(item);
                 });
