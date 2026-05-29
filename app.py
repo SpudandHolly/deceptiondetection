@@ -945,13 +945,18 @@ class DeceptionDetector:
 
         return result.replace('\n', '<br>')
 
-    def _generate_trend_data(self, text: str, matches: list, num_segments: int = 20) -> dict:
+    def _generate_trend_data(self, text: str, matches: list, num_segments: int = 10) -> dict:
         """Generate trend data showing deception intensity across the text."""
         text_length = len(text)
+
+        # Generate labels
+        labels = [f'{int(i * (100 / num_segments))}%' for i in range(num_segments + 1)]
+
         if text_length == 0 or not matches:
             return {
-                'labels': [f'{i*5}%' for i in range(num_segments + 1)],
+                'labels': labels,
                 'values': [0] * (num_segments + 1),
+                'raw_values': [0] * (num_segments + 1),
                 'categories': {}
             }
 
@@ -960,31 +965,25 @@ class DeceptionDetector:
         category_data = {}
 
         for match in matches:
-            # Determine which segment(s) this match falls into
-            start_segment = int(match['start'] / segment_size)
-            end_segment = int(match['end'] / segment_size)
+            # Determine which segment this match falls into (use midpoint)
+            midpoint = (match['start'] + match['end']) / 2
+            segment = int(midpoint / segment_size)
 
             # Clamp to valid range
-            start_segment = min(start_segment, num_segments)
-            end_segment = min(end_segment, num_segments)
+            segment = max(0, min(segment, num_segments))
 
-            # Add weighted score to affected segments
-            for seg in range(start_segment, end_segment + 1):
-                segment_scores[seg] += match['weight']
+            # Add weighted score to the segment
+            segment_scores[segment] += match['weight']
 
             # Track by category
             cat = match['category']
             if cat not in category_data:
                 category_data[cat] = [0.0] * (num_segments + 1)
-            for seg in range(start_segment, end_segment + 1):
-                category_data[cat][seg] += match['weight']
+            category_data[cat][segment] += match['weight']
 
         # Normalize scores to 0-100 scale
         max_score = max(segment_scores) if max(segment_scores) > 0 else 1
         normalized_scores = [round((s / max_score) * 100, 1) for s in segment_scores]
-
-        # Generate labels (position in text as percentage)
-        labels = [f'{int(i * (100 / num_segments))}%' for i in range(num_segments + 1)]
 
         return {
             'labels': labels,
