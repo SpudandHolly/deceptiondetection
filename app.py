@@ -3,13 +3,31 @@ Deception Detection Web Application
 Flask app that analyzes text for deception indicators
 """
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from functools import wraps
 import re
 import os
+import secrets
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
+
+# Authorized users
+AUTHORIZED_USERS = {'jon@cavefish.co.uk'}
+
+
+def login_required(f):
+    """Decorator to require login for protected routes."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session or session['user'] not in AUTHORIZED_USERS:
+            if request.is_json:
+                return jsonify({'error': 'Unauthorized', 'login_required': True}), 401
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @dataclass
 class DeceptionIndicator:
@@ -680,12 +698,34 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        email = request.form.get('email', '').lower().strip()
+        if email in AUTHORIZED_USERS:
+            session['user'] = email
+            next_url = request.args.get('next', url_for('rules'))
+            return redirect(next_url)
+        else:
+            error = 'Access denied. You are not authorized to access this system.'
+    return render_template('login.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('index'))
+
+
 @app.route('/rules')
+@login_required
 def rules():
-    return render_template('rules.html')
+    return render_template('rules.html', user=session.get('user'))
 
 
 @app.route('/api/rules', methods=['GET'])
+@login_required
 def get_rules():
     """Get all rules with current weights."""
     rules = []
@@ -704,6 +744,7 @@ def get_rules():
 
 
 @app.route('/api/rules/<int:rule_id>', methods=['PUT'])
+@login_required
 def update_rule(rule_id):
     """Update a specific rule's weight or patterns."""
     data = request.get_json()
@@ -736,6 +777,7 @@ def update_rule(rule_id):
 
 
 @app.route('/api/rules/reset', methods=['POST'])
+@login_required
 def reset_rules():
     """Reset all rules to defaults."""
     global custom_weights
