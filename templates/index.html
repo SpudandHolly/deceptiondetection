@@ -313,6 +313,8 @@
             background: rgba(0,0,0,0.3);
             border-radius: 12px;
             padding: 15px;
+            height: 200px;
+            position: relative;
         }
 
         /* Red flags */
@@ -861,11 +863,11 @@ Examples of what you can analyze:
                     <div class="charts-row">
                         <div class="chart-container">
                             <div style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Category Breakdown</div>
-                            <canvas id="categoryChart" height="160"></canvas>
+                            <canvas id="categoryChart"></canvas>
                         </div>
                         <div class="chart-container">
                             <div style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Deception Trend (Start → End)</div>
-                            <canvas id="trendChart" height="160"></canvas>
+                            <canvas id="trendChart"></canvas>
                         </div>
                     </div>
 
@@ -1254,26 +1256,31 @@ Please don't wait - just transfer what you can and I'll explain everything when 
         }
 
         function renderTrendChart(trendData, riskColor) {
-            const ctx = document.getElementById('trendChart').getContext('2d');
+            const canvas = document.getElementById('trendChart');
+            const ctx = canvas.getContext('2d');
 
             if (trendChart) trendChart.destroy();
 
-            const gradient = ctx.createLinearGradient(0, 0, 0, 160);
+            // Ensure we only use the first 11 data points max
+            const labels = (trendData.labels || []).slice(0, 11);
+            const values = (trendData.values || []).slice(0, 11);
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 150);
             gradient.addColorStop(0, riskColor + '80');
             gradient.addColorStop(1, riskColor + '10');
 
             trendChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: trendData.labels,
+                    labels: labels,
                     datasets: [{
-                        data: trendData.values,
+                        data: values,
                         borderColor: riskColor,
                         backgroundColor: gradient,
                         borderWidth: 2,
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 2
+                        pointRadius: 3
                     }]
                 },
                 options: {
@@ -1283,7 +1290,7 @@ Please don't wait - just transfer what you can and I'll explain everything when 
                     scales: {
                         x: {
                             grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#666', font: { size: 9 }, maxTicksLimit: 5 }
+                            ticks: { color: '#666', font: { size: 9 }, maxTicksLimit: 6 }
                         },
                         y: {
                             beginAtZero: true,
