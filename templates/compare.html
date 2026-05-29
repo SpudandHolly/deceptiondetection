@@ -378,7 +378,16 @@
             <div class="panel panel-a">
                 <h2>
                     <span>📄 Statement A</span>
-                    <span class="panel-label">Original / First</span>
+                    <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                        <select id="sampleA" onchange="loadSampleA()" style="padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(59,130,246,0.5); background: rgba(59,130,246,0.1); color: #3b82f6; font-size: 12px; cursor: pointer;">
+                            <option value="">Load Example...</option>
+                            <option value="insurance_initial">Insurance - Initial Claim</option>
+                            <option value="witness_a">Witness A Statement</option>
+                            <option value="employee_first">Employee - First Account</option>
+                            <option value="suspect_initial">Suspect - Initial Interview</option>
+                        </select>
+                        <span class="panel-label">Original / First</span>
+                    </div>
                 </h2>
                 <textarea id="textA" placeholder="Paste the first statement here...
 
@@ -391,7 +400,16 @@ Examples:
             <div class="panel panel-b">
                 <h2>
                     <span>📄 Statement B</span>
-                    <span class="panel-label">Follow-up / Second</span>
+                    <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                        <select id="sampleB" onchange="loadSampleB()" style="padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(168,85,247,0.5); background: rgba(168,85,247,0.1); color: #a855f7; font-size: 12px; cursor: pointer;">
+                            <option value="">Load Example...</option>
+                            <option value="insurance_followup">Insurance - Follow-up</option>
+                            <option value="witness_b">Witness B Statement</option>
+                            <option value="employee_second">Employee - Revised Account</option>
+                            <option value="suspect_followup">Suspect - Second Interview</option>
+                        </select>
+                        <span class="panel-label">Follow-up / Second</span>
+                    </div>
                 </h2>
                 <textarea id="textB" placeholder="Paste the second statement here...
 
@@ -429,6 +447,195 @@ Examples:
     </div>
 
     <script>
+        // Sample texts for comparison
+        const samplesA = {
+            insurance_initial: `INITIAL INSURANCE CLAIM
+Claim Reference: INS-2026-8834
+Date: 10 May 2026
+Claimant: Robert Jenkins
+
+Statement of Loss:
+
+On the evening of May 8th, I returned home from work at approximately 6:30pm to find that my house had been broken into. The back door had been forced open.
+
+The following items were taken:
+- Sony 65" television - £1,200
+- MacBook Pro laptop - £2,400
+- Cash from bedroom drawer - approximately £500
+- My wife's gold necklace - £800
+
+Total estimated value: £4,900
+
+I called the police immediately and they attended within an hour. Crime reference number: 4521-2026-MAY.
+
+I have owned these items for several years and can provide some receipts if needed.
+
+Robert Jenkins`,
+
+            witness_a: `WITNESS STATEMENT - Person A
+Case: Street Altercation
+Date: 14 May 2026
+Witness: Sarah Thompson
+
+I was walking home from the shops at about 3pm when I saw two men arguing outside the pub on High Street. One man was wearing a red jacket, the other had a blue hoodie.
+
+The man in the red jacket pushed the other one first. I clearly saw this. Then the man in the blue hoodie punched him back. It was definitely self-defense.
+
+The man in red fell down and hit his head on the pavement. The other man ran off towards the park.
+
+I stayed and called for help. The ambulance came about 10 minutes later.
+
+I am certain about what I saw because I was only about 20 feet away and had a clear view.
+
+Sarah Thompson`,
+
+            employee_first: `EMPLOYEE STATEMENT - First Account
+HR Investigation #2026-142
+Date: 12 May 2026
+Employee: Michael Davies
+
+Regarding the incident on May 10th:
+
+I was working at my desk when I overheard a conversation between James and the new intern. James was explaining the project requirements.
+
+I didn't hear everything they said, but the conversation seemed normal to me. James was speaking in his usual tone. The intern was asking questions about the deadline.
+
+At no point did I hear any inappropriate comments or see any behavior that concerned me.
+
+After about 15 minutes, they both went to the meeting room to continue their discussion.
+
+I continued with my work and didn't think anything of it at the time.
+
+Michael Davies`,
+
+            suspect_initial: `INTERVIEW TRANSCRIPT - Initial
+Case: Missing Inventory
+Date: 15 May 2026
+Interviewee: David Wilson (Warehouse Supervisor)
+
+Q: Can you tell us about your whereabouts on the night of May 12th?
+
+A: I was at work until about 6pm, then I went straight home. I had dinner with my wife around 7, watched some TV, and went to bed around 11.
+
+Q: Did you notice anything unusual in the warehouse that day?
+
+A: No, everything was normal. We processed the usual shipments. Nothing out of the ordinary.
+
+Q: Do you have access to the secure storage area?
+
+A: Yes, I have a key card. All supervisors do. But I only go in there when I need to for legitimate work purposes.
+
+Q: When did you last access that area?
+
+A: I think it was a few days before. Maybe the 9th or 10th? I'm not exactly sure. We had a large shipment come in.
+
+David Wilson`
+        };
+
+        const samplesB = {
+            insurance_followup: `FOLLOW-UP INSURANCE STATEMENT
+Claim Reference: INS-2026-8834
+Date: 18 May 2026
+Claimant: Robert Jenkins
+
+Following your request for additional information:
+
+I need to clarify some details from my original claim. Upon further reflection, I believe I may have underestimated some values.
+
+Revised items list:
+- Sony 75" OLED television (not 65") - £2,800
+- MacBook Pro laptop (latest model) - £3,200
+- Cash from bedroom drawer - approximately £800
+- Wife's gold necklace with diamond pendant - £2,500
+- Rolex watch (forgot to mention initially) - £8,500
+- Designer handbag collection - £4,000
+
+Revised total: £21,800
+
+I apologize for the initial confusion. The stress of the situation affected my memory. I have photographs of most items on my phone.
+
+I would like this matter resolved as quickly as possible as we are experiencing financial difficulties.
+
+Robert Jenkins`,
+
+            witness_b: `WITNESS STATEMENT - Person B
+Case: Street Altercation
+Date: 14 May 2026
+Witness: Mark Phillips
+
+I was smoking outside the pub around 3pm when I witnessed an incident between two men.
+
+I saw the whole thing from the beginning. The man in the blue hoodie was the aggressor. He was shouting and getting in the other man's face. The man in red was trying to walk away but blue hoodie blocked him.
+
+Then blue hoodie threw the first punch. The man in red tried to defend himself but got knocked down. He hit his head badly.
+
+Blue hoodie ran off immediately. Didn't even check if the guy was okay.
+
+I've seen blue hoodie around before. He's known for causing trouble. The man in red is a regular at the pub - quiet guy, never any problems.
+
+I'm 100% sure about what happened. I was standing right there, maybe 10 feet away.
+
+Mark Phillips`,
+
+            employee_second: `EMPLOYEE STATEMENT - Revised Account
+HR Investigation #2026-142
+Date: 16 May 2026
+Employee: Michael Davies
+
+I need to update my previous statement after thinking more carefully about what happened.
+
+Actually, now that I recall, James's tone was perhaps a bit more intense than I initially described. He may have been standing quite close to the intern.
+
+I think I might have heard him say something about "staying late to finish the work" but I couldn't hear the exact words. The intern did look uncomfortable, but I assumed it was just nervousness from being new.
+
+I should also mention that I've heard other people say things about James before, though I don't know if they're true.
+
+I want to be helpful to the investigation. I may have downplayed things in my first statement because I didn't want to get involved.
+
+Michael Davies`,
+
+            suspect_followup: `INTERVIEW TRANSCRIPT - Follow-up
+Case: Missing Inventory
+Date: 18 May 2026
+Interviewee: David Wilson (Warehouse Supervisor)
+
+Q: We've reviewed the access logs. They show you entered the secure area at 11:47pm on May 12th. You said you went home at 6pm.
+
+A: Oh, right. I forgot about that. I came back that night because I remembered I'd left my phone charger at work. I just popped in quickly.
+
+Q: The logs show you were in the secure area for 47 minutes.
+
+A: Was it that long? I must have done some paperwork while I was there. I honestly don't remember exactly.
+
+Q: Your key card also accessed the loading bay door at 12:35am.
+
+A: That's strange. Maybe I went out for a cigarette? I do that sometimes. Or maybe the system is wrong?
+
+Q: We have CCTV footage from the car park.
+
+A: Look, I think I need to speak to someone before I say anything else. I may have made some mistakes but I'm not a thief. People who know me will tell you I'm an honest person.
+
+David Wilson`
+        };
+
+        function loadSampleA() {
+            const select = document.getElementById('sampleA');
+            const key = select.value;
+            if (key && samplesA[key]) {
+                document.getElementById('textA').value = samplesA[key];
+            }
+            select.value = '';
+        }
+
+        function loadSampleB() {
+            const select = document.getElementById('sampleB');
+            const key = select.value;
+            if (key && samplesB[key]) {
+                document.getElementById('textB').value = samplesB[key];
+            }
+            select.value = '';
+        }
+
         async function compareTexts() {
             const textA = document.getElementById('textA').value.trim();
             const textB = document.getElementById('textB').value.trim();
