@@ -771,11 +771,21 @@
                             Load Sample ▼
                         </button>
                         <div class="sample-dropdown-content" id="sampleDropdown">
-                            <a href="#" onclick="loadSample('insurance')">Insurance Claim</a>
-                            <a href="#" onclick="loadSample('hr')">HR Complaint</a>
-                            <a href="#" onclick="loadSample('witness')">Witness Statement</a>
-                            <a href="#" onclick="loadSample('corporate')">Corporate Earnings</a>
-                            <a href="#" onclick="loadSample('romance')">Romance Scam</a>
+                            <a href="#" style="color: #888; font-weight: 600; pointer-events: none;">— Claims Verification —</a>
+                            <a href="#" onclick="loadSample('insurance_property')">Property/Burglary Claim</a>
+                            <a href="#" onclick="loadSample('insurance_motor')">Motor Accident Claim</a>
+                            <a href="#" onclick="loadSample('insurance_injury')">Personal Injury Claim</a>
+                            <a href="#" style="color: #888; font-weight: 600; pointer-events: none;">— Recruitment Screening —</a>
+                            <a href="#" onclick="loadSample('recruitment_cv')">CV / Application</a>
+                            <a href="#" onclick="loadSample('recruitment_reference')">Reference Letter</a>
+                            <a href="#" style="color: #888; font-weight: 600; pointer-events: none;">— Workplace Investigations —</a>
+                            <a href="#" onclick="loadSample('workplace_harassment')">Harassment Complaint</a>
+                            <a href="#" onclick="loadSample('workplace_misconduct')">Misconduct Response</a>
+                            <a href="#" style="color: #888; font-weight: 600; pointer-events: none;">— Legal Evidence —</a>
+                            <a href="#" onclick="loadSample('legal_witness')">Witness Statement</a>
+                            <a href="#" style="color: #888; font-weight: 600; pointer-events: none;">— Other —</a>
+                            <a href="#" onclick="loadSample('corporate_earnings')">Corporate Earnings Call</a>
+                            <a href="#" onclick="loadSample('romance_scam')">Romance Scam Messages</a>
                         </div>
                     </div>
                 </h2>
@@ -941,102 +951,207 @@ Examples of what you can analyze:
 
         // Sample texts
         const sampleTexts = {
-            insurance: `Claim Reference: HMI-2026-447821
-Policy Number: PHH-9934-WALES-002
-Insurer: Heartland Mutual Insurance plc
-Date of Claim: 14 May 2026
+            insurance_property: `PROPERTY CLAIM STATEMENT
+Claim Reference: HMI-2026-447821
+Claimant: Derek Shufflebottom
+Date: 14 May 2026
 
-Claimant Details
-Name: Derek Alan Shufflebottom
-Address: 14 Brecknock Close, Pontypridd, CF37 8QP
-Policy Type: Home Contents and Buildings (Premium Plus)
+On the night of 11 May 2026, I returned home from a charity quiz evening at the Pontypridd Bowls Club (I came third, for the record) to discover that my property had been entered via the rear kitchen window. The perpetrators appear to have been professionals, as there was remarkably little sign of disturbance.
 
-Statement of Loss
-On the night of 11 May 2026, I returned home from a charity quiz evening at the Pontypridd Bowls Club (I came third, for the record) to discover that my property had been entered via the rear kitchen window. The perpetrators appear to have been professionals, as there was remarkably little sign of disturbance beyond the items listed below.
-
-Items Reported Stolen:
-- Rolex Submariner - Purchased in Geneva, 2019 - £14,800
-- Bose home cinema system - 72-inch screen, 11.2 surround - £6,200
-- Laptop - Brand new, still in box - £3,400
-- Wife's jewellery collection - Grandmother's pearls etc - £22,500
-- Antique writing desk - Georgian, provenance documented - £8,750
+Items Stolen:
+- Rolex Submariner (Geneva, 2019) - £14,800
+- Bose home cinema system - £6,200
+- MacBook Pro (brand new, still in box) - £3,400
+- Wife's jewellery collection (grandmother's pearls etc) - £22,500
+- Antique Georgian writing desk - £8,750
 Total: £55,650
 
-I have photographs of most items and can provide further documentation upon request. I would like this resolved as quickly as possible as my wife is very distressed.
+I have photographs of most items and can provide documentation upon request. I would like this resolved as quickly as possible as my wife is very distressed.`,
 
-Signed: D. A. Shufflebottom
-Date: 14 May 2026`,
+            insurance_motor: `MOTOR ACCIDENT CLAIM
+Claim Reference: AUTO-2026-29847
+Claimant: Kevin Barnes
+Date: 20 May 2026
 
-            hr: `HR Complaint Statement
-Date: 15 May 2026
-Employee: Sarah Mitchell, Marketing Coordinator
+Statement of Incident:
 
-Statement Regarding Workplace Incident
+On 18th May, I was driving along the A470 heading towards Cardiff. I believe I was travelling at approximately the speed limit, maybe slightly under. The road conditions were fine, I think.
 
-I am writing to formally complain about my manager, David Thompson. I believe I have been treated unfairly over the past several months.
+The next thing I knew, the other vehicle came out of nowhere. It all happened so fast. I tried to brake but there wasn't time. The impact occurred and my car was pushed into the barrier.
 
-To be honest, I'm not the kind of person who complains, but this has gone too far. People who know me will tell you I'm a team player. On or around March, I think, David started excluding me from important meetings. I would never make something like this up.
+I'm not entirely sure which lane I was in at the time. I may have been changing lanes, but I can't say for certain. The other driver must have been speeding because I didn't see them at all until the collision.
 
-There was this one time, maybe in early April, where something happened with a client presentation. The details are a bit fuzzy because it all happened so fast, but basically I was blamed for something that wasn't my fault. I believe David told senior management that the project failed because of me, but that's just not true.
+I suffered whiplash and have been unable to work since. My neck and back are in constant pain. I've had to cancel several holidays and my quality of life has been severely affected. My wife says I'm not the same person anymore.
 
-I suppose I should mention that other colleagues have noticed this too, although I can't remember exactly who said what. If I recall correctly, someone in the team mentioned they thought David was being unfair to me.
+The damage to my vehicle is extensive. It was a nearly new BMW 5 Series, top specification, purchased just six months ago. I believe it may be a total loss.
 
-I would like this matter resolved as quickly as possible as it's affecting my mental health and my family is very concerned.
+I would appreciate a swift resolution as I'm facing financial hardship without my vehicle.`,
 
-Sarah Mitchell`,
+            insurance_injury: `PERSONAL INJURY CLAIM
+Claim Reference: PI-2026-33821
+Claimant: Sandra Williams
+Date: 22 May 2026
 
-            witness: `Police Statement - Witness Account
-Case Reference: MET/2026/05/78432
-Date: 12 May 2026
-Witness: Michael James Patterson
+Incident Description:
 
-Statement:
+On approximately 15th May (I think it was a Wednesday), I was shopping at MegaMart Superstore. I was walking down the beverages aisle when I slipped on something wet on the floor. There was no warning sign.
 
-I was walking home from the pub, I think it was around 11pm, maybe a bit later. I had only had a couple of drinks, nothing excessive. Anyway, I was walking down Elm Street when I heard something.
+I fell heavily and immediately felt pain in my back and hip. A member of staff eventually came over but they didn't seem very concerned. I believe I asked them to call an ambulance but I'm not certain what happened next.
 
-The next thing I knew, there was some kind of commotion near the alley. I saw two individuals, or maybe three, I'm not entirely sure. One of them was definitely wearing dark clothing. They were doing something, I couldn't really see what exactly.
+I somehow made it home and the pain got progressively worse over the following days. I've been unable to work since the incident. I'm a very active person normally - people who know me will tell you I'm always on the go - but now I can barely move some days.
 
-Then someone ran past me. It happened so fast. I think they went left, towards the main road, but I'm not 100% certain. I would say they were medium height, average build. I didn't really get a good look at their face.
+The doctors have said I may need ongoing treatment. I've had to cancel my gym membership, I can't play with my grandchildren, and my sleep has been badly affected. My husband has had to take time off work to care for me.
 
-I should mention that the streetlight on that corner has been broken for weeks, so visibility wasn't great. I stayed where I was for a moment because, well, you hear about these things and you don't want to get involved.
+I understand from friends that this sort of thing happens quite regularly at that store, though I can't confirm this myself. What I can say is that the floor was definitely wet and there was definitely no sign.
 
-After that, I went home and told my wife what happened. She said I should call the police, so I did the next morning.
+I would like this matter settled quickly as the stress is affecting my recovery.`,
 
-That's basically what happened.
+            recruitment_cv: `APPLICATION: Senior Project Manager
+Candidate: James Richardson
+Date: 18 May 2026
 
-M. Patterson`,
+Professional Summary:
+Dynamic and results-oriented project management professional with extensive experience delivering transformational programmes across multiple sectors. Proven track record of leading high-performing teams and exceeding stakeholder expectations.
 
-            corporate: `Q2 2026 Earnings Call Transcript (Excerpt)
+Career History:
+
+GLOBAL DYNAMICS CONSULTING (2019-2024)
+Senior Programme Manager
+- Led various strategic initiatives across the organisation
+- Managed budgets in the region of £5-10 million
+- Responsible for multiple teams and stakeholders
+- Delivered significant improvements to operational efficiency
+- Received positive feedback from senior leadership
+
+TECH SOLUTIONS LTD (2016-2019)
+Project Manager
+- Oversaw delivery of key projects
+- Worked closely with clients to understand requirements
+- Implemented best practice methodologies
+- Contributed to business development activities
+
+Key Achievements:
+- Successfully delivered numerous complex programmes
+- Built strong relationships at all levels
+- Consistently exceeded targets and expectations
+- Recognised as a leader within the organisation
+
+I believe I would be an excellent fit for this role and am excited about the opportunity to contribute to your organisation's success.`,
+
+            recruitment_reference: `REFERENCE FOR JAMES RICHARDSON
+From: David Morrison, Director
+Global Dynamics Consulting
+Date: 20 May 2026
+
+To Whom It May Concern,
+
+I am writing to provide a reference for James Richardson, who I believe worked in our organisation for a period of time.
+
+James was involved in various projects during his time with us. He generally met expectations and was considered a satisfactory member of the team. His work was adequate and he completed his assigned tasks.
+
+In terms of specific achievements, James contributed to several initiatives, though I cannot recall the precise details at this time. He worked with others and participated in meetings as required.
+
+James's technical skills were appropriate for his role. He demonstrated competence in the areas required of him. His communication was acceptable and he maintained professional relationships with colleagues.
+
+I would say James is suitable for a project management position. He left the organisation on reasonable terms and there were no significant issues during his employment that I am aware of.
+
+If you require any further information, please do not hesitate to contact me, though my recollection of specific projects may be limited given the passage of time.
+
+Yours faithfully,
+David Morrison`,
+
+            workplace_harassment: `HARASSMENT COMPLAINT STATEMENT
+HR Case: WI-2026-0892
+Complainant: Emma Clarke, Sales Executive
+Date: 19 May 2026
+
+I am writing to formally report harassment by my colleague, Tom Bradley.
+
+To be completely honest, I'm not the type of person to make complaints. Everyone will tell you I'm very easy-going. But this situation has become unbearable and I feel I have no choice.
+
+The incidents have been happening for several months now. I believe it started around February, maybe March. Tom has been making comments that make me uncomfortable. I can't remember the exact words, but they were inappropriate in nature.
+
+There was one specific incident, I think it was at the team lunch, where something happened. The details are a bit blurry because I was so upset, but I know it was wrong. I believe other people noticed too, though I haven't spoken to them directly.
+
+I've tried to handle this myself because I didn't want to cause trouble. People who know me will confirm that I always try to resolve things professionally. But Tom's behaviour has continued despite my efforts.
+
+I should mention that this is affecting my mental health significantly. I've had sleepless nights and my family is very worried about me. My performance at work has suffered, which isn't fair given that none of this is my fault.
+
+I would like this investigated urgently. I feel this has been going on far too long already.`,
+
+            workplace_misconduct: `RESPONSE TO MISCONDUCT ALLEGATION
+HR Case: WI-2026-0915
+Employee: Richard Hughes, Finance Manager
+Date: 21 May 2026
+
+Statement in Response to Allegations:
+
+I am writing to respond to the allegations made against me regarding the procurement irregularities.
+
+First, I want to be absolutely clear - I am an honest person. I have worked for this company for 12 years and my integrity has never been questioned. Anyone who knows me will tell you that I would never do anything improper.
+
+Regarding the specific transactions in question, I believe there may have been some administrative errors. The procurement system is complicated and mistakes can happen. If invoices were approved incorrectly, it was not intentional.
+
+I don't recall the specific approvals mentioned in the investigation. I process hundreds of transactions and cannot remember every single one. The vendor in question is legitimate - I think they were recommended by someone, though I can't remember who exactly.
+
+As for the relationship with the vendor's director, we may have met at industry events as many people do. I don't believe there was anything unusual about our interactions. Any dinners or hospitality would have been within normal business practices, I assume.
+
+The suggestion that I benefited personally is completely false. I have always acted in the company's best interests. My lifestyle is consistent with my salary and I have nothing to hide.
+
+I believe this investigation will clear my name. I am happy to cooperate fully and trust that the truth will come out.`,
+
+            legal_witness: `WITNESS STATEMENT
+Case: Henderson v Crown Commercial Properties Ltd
+Witness: Patricia Moore
+Date: 23 May 2026
+
+I, Patricia Moore, make this statement in connection with the above matter.
+
+On approximately 10th March 2026, I was in the vicinity of the building site on Corporation Street. I believe I was walking to the shops, though I can't be certain of the exact time.
+
+I heard a commotion and turned to look. I saw someone, I think it was the claimant, near the scaffolding. Something fell, or may have fallen - it happened very quickly. The person appeared to be struck and fell to the ground.
+
+I noticed that the scaffolding looked unsafe, though I'm not an expert in these matters. There didn't seem to be proper barriers, as far as I could tell. I remember thinking it looked dangerous, or at least I believe I thought that at the time.
+
+I went to help and someone called an ambulance. The injured person was clearly in pain. I may have spoken to a site worker but I don't recall what was said. I think they seemed worried about what had happened.
+
+I didn't see exactly what fell or where it came from. It could have been building materials, I suppose. The whole thing happened so fast.
+
+I have no personal connection to either party in this case. I am simply reporting what I observed, to the best of my recollection.
+
+Statement of Truth: I believe the facts stated in this witness statement are true.`,
+
+            romance_scam: `MESSAGE THREAD - Dating App
+From: Alexander (Profile: Entrepreneur, 45)
+
+Day 3:
+"I know we've only just met, but I feel such an incredible connection with you. You're so special - I've never felt this way about anyone before. It must be fate that brought us together."
+
+Day 7:
+"My darling, I think about you constantly. You're absolutely perfect in every way. I believe you're my soulmate. No one has ever made me feel this way."
+
+Day 12:
+"I have urgent news. There's an amazing investment opportunity - it won't last long and we need to act now. I would never ask this normally, but I've had unexpected issues with my bank account while traveling.
+
+I promise I'll pay you back as soon as I return. This is time sensitive - the opportunity closes tomorrow. I trust you completely, and I hope you trust me too.
+
+Please don't wait - just transfer what you can. You're the only person I can turn to right now."`,
+
+            corporate_earnings: `Q2 2026 EARNINGS CALL TRANSCRIPT (Excerpt)
 TechnoVation Inc.
 
 CEO James Crawford:
-"Thank you for joining us today. We are pleased to report what we believe represents solid performance for the quarter, despite some headwinds in the market.
+"We are pleased to report what we believe represents solid performance for the quarter, despite headwinds in the market.
 
-Our adjusted EBITDA, excluding one-time restructuring charges and certain non-recurring items, shows underlying strength in our core business. Going forward, we are exploring options to optimize our operational synergies and leverage our market position.
+Our adjusted EBITDA, excluding one-time restructuring charges and non-recurring items, shows underlying strength. Going forward, we are exploring options to optimize operational synergies.
 
-I want to be clear - we remain committed to delivering shareholder value. The challenges we faced this quarter are temporary in nature. Our strategic initiatives are on track, and we are confident about the opportunities ahead.
+I want to be clear - we remain committed to shareholder value. The challenges this quarter are temporary. Our strategic initiatives are on track.
 
-Regarding the product delays mentioned in the press, I think there may have been some miscommunication. What I would say is that our timeline has been adjusted to ensure we deliver a premium experience to our customers. We are not concerned about the competitive landscape.
+Regarding product delays mentioned in the press, there may have been miscommunication. Our timeline has been adjusted to ensure we deliver a premium experience. We are not concerned about the competitive landscape.
 
-Our team has been working tirelessly, and I believe we have the right strategy in place. The fundamentals of our business remain strong, and we are well-positioned to capitalize on emerging market trends.
+Our team has been working tirelessly. The fundamentals remain strong and we are well-positioned to capitalize on emerging trends.
 
 We appreciate your continued support and confidence in TechnoVation."`,
-
-            romance: `Message Thread - Dating App
-From: Alexander (Profile: Successful Entrepreneur, 45)
-
-Day 3:
-"I know we've only just met, but I feel such an incredible connection with you. You're so special - I've never felt this way about anyone before. It must be fate that brought us together. You're the only one who truly understands me."
-
-Day 7:
-"My darling, I think about you constantly. You're absolutely perfect in every way. I know this might sound crazy, but I believe you're my soulmate. No one has ever made me feel this way."
-
-Day 12:
-"I have some urgent news. There's an amazing investment opportunity that just came up - it won't last long and we need to act now. I would never ask this normally, but I've had some unexpected issues with my bank account while traveling.
-
-I promise I'll pay you back as soon as I return. This is time sensitive - the opportunity closes tomorrow. I trust you completely, and I hope you trust me too. This could be our future together.
-
-Please don't wait - just transfer what you can and I'll explain everything when we meet. You're the only person I can turn to right now."`,
         };
 
         // Research basis for indicators

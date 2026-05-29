@@ -381,10 +381,22 @@
                     <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
                         <select id="sampleA" onchange="loadSampleA()" style="padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(59,130,246,0.5); background: rgba(59,130,246,0.1); color: #3b82f6; font-size: 12px; cursor: pointer;">
                             <option value="">Load Example...</option>
-                            <option value="insurance_initial">Insurance - Initial Claim</option>
-                            <option value="witness_a">Witness A Statement</option>
-                            <option value="employee_first">Employee - First Account</option>
-                            <option value="suspect_initial">Suspect - Initial Interview</option>
+                            <optgroup label="Claims Verification">
+                                <option value="insurance_initial">Property Claim - Initial</option>
+                                <option value="motor_claimant">Motor Claim - Claimant</option>
+                                <option value="injury_claimant">Injury Claim - Claimant</option>
+                            </optgroup>
+                            <optgroup label="Recruitment">
+                                <option value="candidate_statement">Candidate Application</option>
+                            </optgroup>
+                            <optgroup label="Workplace">
+                                <option value="complainant_statement">Harassment - Complainant</option>
+                            </optgroup>
+                            <optgroup label="Legal">
+                                <option value="plaintiff_witness">Civil Case - Plaintiff Witness</option>
+                                <option value="witness_a">Criminal - Witness A</option>
+                                <option value="suspect_initial">Interview - Initial</option>
+                            </optgroup>
                         </select>
                         <span class="panel-label">Original / First</span>
                     </div>
@@ -403,10 +415,22 @@ Examples:
                     <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
                         <select id="sampleB" onchange="loadSampleB()" style="padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(168,85,247,0.5); background: rgba(168,85,247,0.1); color: #a855f7; font-size: 12px; cursor: pointer;">
                             <option value="">Load Example...</option>
-                            <option value="insurance_followup">Insurance - Follow-up</option>
-                            <option value="witness_b">Witness B Statement</option>
-                            <option value="employee_second">Employee - Revised Account</option>
-                            <option value="suspect_followup">Suspect - Second Interview</option>
+                            <optgroup label="Claims Verification">
+                                <option value="insurance_followup">Property Claim - Follow-up</option>
+                                <option value="motor_witness">Motor Claim - Ind. Witness</option>
+                                <option value="injury_cctv">Injury Claim - CCTV Review</option>
+                            </optgroup>
+                            <optgroup label="Recruitment">
+                                <option value="reference_check">Reference Check Response</option>
+                            </optgroup>
+                            <optgroup label="Workplace">
+                                <option value="accused_response">Harassment - Accused Response</option>
+                            </optgroup>
+                            <optgroup label="Legal">
+                                <option value="defendant_witness">Civil Case - Defendant Witness</option>
+                                <option value="witness_b">Criminal - Witness B</option>
+                                <option value="suspect_followup">Interview - Follow-up</option>
+                            </optgroup>
                         </select>
                         <span class="panel-label">Follow-up / Second</span>
                     </div>
@@ -449,6 +473,7 @@ Examples:
     <script>
         // Sample texts for comparison
         const samplesA = {
+            // CLAIMS VERIFICATION
             insurance_initial: `INITIAL INSURANCE CLAIM
 Claim Reference: INS-2026-8834
 Date: 10 May 2026
@@ -472,6 +497,100 @@ I have owned these items for several years and can provide some receipts if need
 
 Robert Jenkins`,
 
+            motor_claimant: `MOTOR ACCIDENT - CLAIMANT STATEMENT
+Claim Reference: AUTO-2026-44521
+Date: 15 May 2026
+Claimant: Steven Price
+
+On 12th May at approximately 3pm, I was driving along the B4562 towards Abergavenny. I was travelling at about 30mph in the 40 zone, being cautious due to the weather conditions.
+
+The other vehicle appeared from a side road without warning. I believe they failed to stop at the junction. I had no time to react before the collision occurred.
+
+My vehicle, a BMW 3 Series, sustained significant front-end damage. I suffered whiplash and have been unable to work since the accident. The impact was severe.
+
+I am certain the other driver was at fault. They pulled out directly into my path.
+
+Steven Price`,
+
+            injury_claimant: `PERSONAL INJURY CLAIM
+Claim Reference: PI-2026-7821
+Claimant: Angela Morrison
+Date: 18 May 2026
+
+On 14th May, I slipped and fell at Riverside Shopping Centre. The floor was wet near the entrance with no warning signs visible.
+
+I fell heavily on my right side, injuring my hip and shoulder. Staff were slow to respond and seemed more concerned about liability than my welfare.
+
+I attended A&E where X-rays were taken. I've been in considerable pain since and require ongoing physiotherapy. My doctor has signed me off work for at least 6 weeks.
+
+The shopping centre was clearly negligent in failing to maintain safe conditions.
+
+Angela Morrison`,
+
+            // RECRUITMENT SCREENING
+            candidate_statement: `JOB APPLICATION - PERSONAL STATEMENT
+Position: Head of Digital Marketing
+Candidate: Jennifer Walsh
+Date: 20 May 2026
+
+I am an exceptional marketing professional with over 10 years of experience driving transformational digital strategies across multiple sectors.
+
+In my current role at Apex Media Group, I single-handedly developed and implemented a comprehensive digital transformation programme that revolutionised our approach to customer engagement. I built and led a high-performing team of 15 specialists, managing budgets exceeding £2 million annually.
+
+Key achievements include:
+- Increased digital revenue by 300% year-on-year
+- Launched award-winning campaigns recognised by industry bodies
+- Established partnerships with major global brands
+- Personally generated over £5 million in new business
+
+I am known for my innovative thinking, exceptional leadership, and ability to deliver results under pressure. My strategic vision and hands-on expertise make me the ideal candidate for this role.
+
+I would welcome the opportunity to bring my proven track record of success to your organisation.`,
+
+            // WORKPLACE INVESTIGATIONS
+            complainant_statement: `HARASSMENT COMPLAINT
+HR Case: WI-2026-0892
+Complainant: Emma Clarke
+Date: 19 May 2026
+
+I am writing to formally report harassment by my colleague, Tom Bradley.
+
+To be completely honest, I'm not the type of person to make complaints. Everyone will tell you I'm very easy-going. But this situation has become unbearable.
+
+The incidents have been happening for several months. I believe it started around February. Tom has been making comments that make me uncomfortable. I can't remember the exact words, but they were inappropriate.
+
+There was one specific incident at the team lunch where something happened. The details are a bit blurry because I was upset, but I know it was wrong. I believe other people noticed.
+
+I've tried to handle this myself. People who know me will confirm I always try to resolve things professionally. But Tom's behaviour has continued.
+
+This is affecting my mental health significantly. I've had sleepless nights and my family is very worried. My performance has suffered, which isn't fair.
+
+I would like this investigated urgently.
+
+Emma Clarke`,
+
+            // LEGAL EVIDENCE
+            plaintiff_witness: `WITNESS STATEMENT - FOR CLAIMANT
+Case: Morrison v Riverside Shopping Centre
+Witness: David Chen
+Date: 22 May 2026
+
+I was at Riverside Shopping Centre on 14th May at approximately 2pm when I witnessed an accident.
+
+I saw the claimant, a middle-aged woman, slip and fall near the main entrance. The floor appeared to be wet. I did not see any warning signs in the area.
+
+The woman fell heavily and was clearly in pain. She was unable to get up without assistance. Staff took several minutes to respond.
+
+I noticed that the floor was slippery because I nearly slipped myself when I went to help. It seemed dangerous.
+
+In my opinion, the shopping centre should have taken better precautions. The conditions were clearly hazardous.
+
+I have no connection to the claimant and am simply reporting what I observed.
+
+Statement of Truth: I believe the facts in this statement are true.
+
+David Chen`,
+
             witness_a: `WITNESS STATEMENT - Person A
 Case: Street Altercation
 Date: 14 May 2026
@@ -489,29 +608,10 @@ I am certain about what I saw because I was only about 20 feet away and had a cl
 
 Sarah Thompson`,
 
-            employee_first: `EMPLOYEE STATEMENT - First Account
-HR Investigation #2026-142
-Date: 12 May 2026
-Employee: Michael Davies
-
-Regarding the incident on May 10th:
-
-I was working at my desk when I overheard a conversation between James and the new intern. James was explaining the project requirements.
-
-I didn't hear everything they said, but the conversation seemed normal to me. James was speaking in his usual tone. The intern was asking questions about the deadline.
-
-At no point did I hear any inappropriate comments or see any behavior that concerned me.
-
-After about 15 minutes, they both went to the meeting room to continue their discussion.
-
-I continued with my work and didn't think anything of it at the time.
-
-Michael Davies`,
-
             suspect_initial: `INTERVIEW TRANSCRIPT - Initial
 Case: Missing Inventory
 Date: 15 May 2026
-Interviewee: David Wilson (Warehouse Supervisor)
+Interviewee: David Wilson
 
 Q: Can you tell us about your whereabouts on the night of May 12th?
 
@@ -527,12 +627,13 @@ A: Yes, I have a key card. All supervisors do. But I only go in there when I nee
 
 Q: When did you last access that area?
 
-A: I think it was a few days before. Maybe the 9th or 10th? I'm not exactly sure. We had a large shipment come in.
+A: I think it was a few days before. Maybe the 9th or 10th? I'm not exactly sure.
 
 David Wilson`
         };
 
         const samplesB = {
+            // CLAIMS VERIFICATION
             insurance_followup: `FOLLOW-UP INSURANCE STATEMENT
 Claim Reference: INS-2026-8834
 Date: 18 May 2026
@@ -558,6 +659,114 @@ I would like this matter resolved as quickly as possible as we are experiencing 
 
 Robert Jenkins`,
 
+            motor_witness: `MOTOR ACCIDENT - INDEPENDENT WITNESS
+Claim Reference: AUTO-2026-44521
+Date: 16 May 2026
+Witness: Carol Hughes (following vehicle)
+
+I was driving behind a BMW on the B4562 on 12th May at around 3pm.
+
+I observed the BMW travelling at what appeared to be well above the speed limit, approximately 50-55mph. The driver seemed to be in a hurry and had been tailgating the car in front.
+
+When we approached the junction, a Vauxhall pulled out from the side road. The Vauxhall driver had clearly checked and begun pulling out when safe to do so. However, the BMW was travelling too fast to stop in time.
+
+The BMW driver did not appear to brake until the last moment. I believe the collision could have been avoided if the BMW had been travelling at an appropriate speed.
+
+I stopped to provide my details as a witness. The BMW driver seemed agitated and was immediately blaming the other driver.
+
+I am happy to provide further information if required.
+
+Carol Hughes`,
+
+            injury_cctv: `CCTV REVIEW SUMMARY
+Claim Reference: PI-2026-7821
+Prepared by: Security Manager, Riverside Shopping Centre
+Date: 20 May 2026
+
+Following review of CCTV footage from 14th May:
+
+13:47 - Claimant enters through main entrance, appears to be looking at mobile phone
+13:48 - Claimant walks directly through area where wet floor sign is clearly visible
+13:48 - Claimant slips and falls (wet floor sign visible in frame, approximately 2 metres from incident location)
+13:49 - Two staff members approach within 45 seconds
+13:50 - First aider arrives with wheelchair
+
+Additional observations:
+- Yellow wet floor sign clearly deployed and visible in footage
+- Sign positioned at standard location per protocol
+- Three other customers observed navigating around sign successfully in preceding 5 minutes
+- Claimant appeared distracted by phone at time of incident
+
+Footage preserved and available for legal review.`,
+
+            // RECRUITMENT SCREENING
+            reference_check: `REFERENCE CHECK - CONFIDENTIAL
+Candidate: Jennifer Walsh
+Referee: Mark Stevens, Former Line Manager, Apex Media Group
+Date: 22 May 2026
+
+Q: Can you confirm Jennifer's job title and dates of employment?
+A: She was Digital Marketing Manager - not Head of Digital as she may have indicated. She was with us from March 2021 to February 2026.
+
+Q: How large was her team?
+A: She had 4 direct reports. We did have a larger department but she wasn't responsible for all of them.
+
+Q: Can you comment on budget responsibility?
+A: Her budget was around £400,000 annually. The £2 million figure would have been the entire marketing department.
+
+Q: What about the 300% revenue increase she mentioned?
+A: There was revenue growth during her time, but it was a team effort and coincided with our company-wide digital investment. I couldn't attribute that specifically to Jennifer.
+
+Q: Would you rehire her?
+A: Jennifer was a competent manager. There were some concerns about her tendency to overstate her contributions in meetings. She left following a restructure - I'd prefer not to go into details.
+
+Q: Any other comments?
+A: She's capable, but I'd recommend verifying her specific achievement claims carefully.`,
+
+            // WORKPLACE INVESTIGATIONS
+            accused_response: `RESPONSE TO HARASSMENT ALLEGATION
+HR Case: WI-2026-0892
+Employee: Tom Bradley
+Date: 21 May 2026
+
+I am writing to respond to the allegations made by Emma Clarke.
+
+I categorically deny any harassment. I have always treated Emma professionally and with respect. I am shocked and hurt by these accusations.
+
+Regarding the specific incidents mentioned:
+
+The "comments" Emma refers to were normal workplace conversations. I have never said anything inappropriate to her. I treat all colleagues the same way.
+
+The team lunch incident - I honestly don't know what she's referring to. Nothing unusual happened. Multiple colleagues were present and can confirm this.
+
+I should mention some context: Emma has been struggling with her performance targets this quarter. Her last review was difficult. I wonder if this complaint is connected to that.
+
+I have worked here for 8 years with an unblemished record. I have completed all harassment training and take these matters seriously. My colleagues will confirm I am respectful and professional.
+
+I believe this investigation will clear my name. I have nothing to hide and am happy to cooperate fully.
+
+Tom Bradley`,
+
+            // LEGAL EVIDENCE
+            defendant_witness: `WITNESS STATEMENT - FOR DEFENDANT
+Case: Morrison v Riverside Shopping Centre
+Witness: Shop Assistant, Ground Floor
+Date: 23 May 2026
+
+I was working at the cosmetics counter near the main entrance on 14th May.
+
+I clearly recall that wet floor signs were in place that afternoon. We had put them out following routine cleaning around 1pm. The signs were the standard yellow triangular ones and were positioned correctly.
+
+I saw the lady fall. She appeared to be looking at her phone as she walked. She walked straight through the signed area without looking up.
+
+Several other customers had successfully navigated around the signs before the incident. One gentleman even commented to me that he appreciated the warning.
+
+When the lady fell, our staff responded very quickly. I pressed the first aid alert button immediately. We followed all our procedures correctly.
+
+In my opinion, the lady was not paying attention to where she was walking. The warning signs were clearly visible.
+
+Statement of Truth: I believe the facts in this statement are true.`,
+
             witness_b: `WITNESS STATEMENT - Person B
 Case: Street Altercation
 Date: 14 May 2026
@@ -577,39 +786,22 @@ I'm 100% sure about what happened. I was standing right there, maybe 10 feet awa
 
 Mark Phillips`,
 
-            employee_second: `EMPLOYEE STATEMENT - Revised Account
-HR Investigation #2026-142
-Date: 16 May 2026
-Employee: Michael Davies
-
-I need to update my previous statement after thinking more carefully about what happened.
-
-Actually, now that I recall, James's tone was perhaps a bit more intense than I initially described. He may have been standing quite close to the intern.
-
-I think I might have heard him say something about "staying late to finish the work" but I couldn't hear the exact words. The intern did look uncomfortable, but I assumed it was just nervousness from being new.
-
-I should also mention that I've heard other people say things about James before, though I don't know if they're true.
-
-I want to be helpful to the investigation. I may have downplayed things in my first statement because I didn't want to get involved.
-
-Michael Davies`,
-
             suspect_followup: `INTERVIEW TRANSCRIPT - Follow-up
 Case: Missing Inventory
 Date: 18 May 2026
-Interviewee: David Wilson (Warehouse Supervisor)
+Interviewee: David Wilson
 
 Q: We've reviewed the access logs. They show you entered the secure area at 11:47pm on May 12th. You said you went home at 6pm.
 
-A: Oh, right. I forgot about that. I came back that night because I remembered I'd left my phone charger at work. I just popped in quickly.
+A: Oh, right. I forgot about that. I came back because I'd left my phone charger at work.
 
 Q: The logs show you were in the secure area for 47 minutes.
 
-A: Was it that long? I must have done some paperwork while I was there. I honestly don't remember exactly.
+A: Was it that long? I must have done some paperwork. I don't remember exactly.
 
 Q: Your key card also accessed the loading bay door at 12:35am.
 
-A: That's strange. Maybe I went out for a cigarette? I do that sometimes. Or maybe the system is wrong?
+A: That's strange. Maybe I went out for a cigarette? Or maybe the system is wrong?
 
 Q: We have CCTV footage from the car park.
 
