@@ -616,10 +616,78 @@ class DeceptionDetector:
 # Initialize detector
 detector = DeceptionDetector()
 
+# Store for custom weights (in production, use database)
+custom_weights = {}
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/rules')
+def rules():
+    return render_template('rules.html')
+
+
+@app.route('/api/rules', methods=['GET'])
+def get_rules():
+    """Get all rules with current weights."""
+    rules = []
+    for i, ind in enumerate(detector.indicators):
+        rules.append({
+            'id': i,
+            'name': ind.name,
+            'description': ind.description,
+            'category': ind.category,
+            'patterns': ind.patterns,
+            'weight': custom_weights.get(i, ind.weight),
+            'default_weight': ind.weight,
+            'enabled': custom_weights.get(f'{i}_enabled', True)
+        })
+    return jsonify(rules)
+
+
+@app.route('/api/rules/<int:rule_id>', methods=['PUT'])
+def update_rule(rule_id):
+    """Update a specific rule's weight or patterns."""
+    data = request.get_json()
+
+    if rule_id < 0 or rule_id >= len(detector.indicators):
+        return jsonify({'error': 'Invalid rule ID'}), 400
+
+    # Update weight
+    if 'weight' in data:
+        weight = float(data['weight'])
+        if 0 <= weight <= 3:
+            custom_weights[rule_id] = weight
+            detector.indicators[rule_id].weight = weight
+
+    # Update enabled status
+    if 'enabled' in data:
+        custom_weights[f'{rule_id}_enabled'] = data['enabled']
+
+    # Update patterns
+    if 'patterns' in data:
+        patterns = data['patterns']
+        if isinstance(patterns, list):
+            detector.indicators[rule_id].patterns = patterns
+
+    # Update description
+    if 'description' in data:
+        detector.indicators[rule_id].description = data['description']
+
+    return jsonify({'success': True, 'rule_id': rule_id})
+
+
+@app.route('/api/rules/reset', methods=['POST'])
+def reset_rules():
+    """Reset all rules to defaults."""
+    global custom_weights
+    custom_weights = {}
+    # Reinitialize detector
+    detector.indicators = detector._initialize_indicators()
+    return jsonify({'success': True})
 
 
 @app.route('/analyze', methods=['POST'])
