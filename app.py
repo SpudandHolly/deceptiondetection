@@ -14,8 +14,10 @@ from typing import List, Dict, Tuple
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 
-# Authorized users
-AUTHORIZED_USERS = {'jon@cavefish.co.uk'}
+# Authentication - credentials from environment variables
+AUTHORIZED_USERS = {
+    os.environ.get('AUTH_EMAIL', 'jon@cavefish.co.uk'): os.environ.get('AUTH_PASSWORD', '')
+}
 
 
 def login_required(f):
@@ -37,6 +39,7 @@ class DeceptionIndicator:
     patterns: List[str]
     weight: float = 1.0
     category: str = "General"
+    is_new: bool = False  # Flag for newly added indicators
     examples: List[str] = field(default_factory=list)
 
 
@@ -424,6 +427,344 @@ class DeceptionDetector:
                 weight=1.3,
                 category="Insurance"
             ),
+
+            # ============================================================
+            # NEW INDICATORS - CBCA (Criteria-Based Content Analysis)
+            # ============================================================
+            DeceptionIndicator(
+                name="Logical Inconsistencies",
+                description="Contradictions or logical impossibilities in the narrative",
+                patterns=[
+                    r"\b(but\s+then\s+again|on\s+the\s+other\s+hand|actually\s+no|wait\s+no)\b",
+                    r"\b(before|after)\b.{0,50}\b(before|after)\b",
+                    r"\b(never|always)\b.{0,30}\b(except|but|although)\b",
+                    r"\b(impossible|couldn't\s+have)\b.{0,30}\b(but|yet|still)\b",
+                ],
+                weight=1.7,
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Overly Linear Narrative",
+                description="Too structured/chronological - truthful accounts often jump around",
+                patterns=[
+                    r"\b(first|firstly)\b.{0,100}\b(second|secondly)\b.{0,100}\b(third|thirdly|finally)\b",
+                    r"\b(step\s+one|step\s+1)\b.{0,100}\b(step\s+two|step\s+2)\b",
+                    r"\b(then|next|after\s+that|subsequently)\b.{0,50}\b(then|next|after\s+that|subsequently)\b.{0,50}\b(then|next|after\s+that|subsequently)\b",
+                ],
+                weight=1.3,
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Lack of Detail Quantity",
+                description="Sparse on specifics where detail would be expected",
+                patterns=[
+                    r"\b(something|stuff|things)\s+(happened|occurred)\b",
+                    r"\b(some|a\s+few|several)\s+(people|things|items)\b(?!.*\bspecifically\b)",
+                    r"\b(somewhere|someplace|around\s+there)\b",
+                    r"\b(a\s+while|some\s+time|a\s+bit)\s+(ago|later|after)\b",
+                ],
+                weight=1.4,
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Missing Contextual Embedding",
+                description="Lacks anchoring to time, place, or circumstances",
+                patterns=[
+                    r"^(?!.*\b(on|at|in|during)\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday|\d{1,2}(st|nd|rd|th)?|january|february|march|april|may|june|july|august|september|october|november|december)\b).{100,}$",
+                ],
+                weight=1.2,
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="No Direct Quotes",
+                description="Absence of reproduced conversations - uses indirect speech only",
+                patterns=[
+                    r"\b(he|she|they)\s+(said|told|asked|mentioned)\s+(that|me|us)\b(?!.*[\"'])",
+                    r"\b(we|they)\s+(talked|spoke|discussed)\s+(about)\b(?!.*[\"'])",
+                    r"\b(according\s+to|apparently|supposedly)\b",
+                ],
+                weight=1.3,
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Direct Quote Present",
+                description="Reproduced conversation suggests genuine memory (positive indicator)",
+                patterns=[
+                    r"[\"'][A-Z][^\"']{10,}[\"']",
+                    r"\b(he|she)\s+said\s*[,:]?\s*[\"']",
+                    r"\bI\s+(said|asked|replied)\s*[,:]?\s*[\"']",
+                ],
+                weight=-0.5,  # Negative weight - reduces deception score
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="No Unexpected Complications",
+                description="Story too smooth - real events have interruptions/obstacles",
+                patterns=[
+                    r"^(?!.*\b(unfortunately|but\s+then|however|suddenly|unexpectedly|to\s+my\s+surprise)\b).{200,}$",
+                ],
+                weight=1.2,
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Spontaneous Corrections",
+                description="Self-corrections suggest genuine recall (positive indicator)",
+                patterns=[
+                    r"\b(no\s+wait|actually|I\s+mean|sorry|correction|let\s+me\s+rephrase)\b",
+                    r"\b(or\s+was\s+it|no\s+it\s+was|I\s+think\s+it\s+was\s+actually)\b",
+                ],
+                weight=-0.4,  # Negative weight - reduces deception score
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Admits Memory Gaps",
+                description="Honestly admitting not remembering (positive indicator)",
+                patterns=[
+                    r"\bI\s+(don't|can't|cannot)\s+(quite\s+)?(remember|recall)\s+(exactly|precisely|specifically)\b",
+                    r"\b(my\s+memory\s+is|details\s+are)\s+(fuzzy|hazy|unclear|vague)\b",
+                    r"\bI'm\s+not\s+(entirely\s+)?(sure|certain)\s+(about|of)\b",
+                ],
+                weight=-0.5,  # Negative weight - reduces deception score
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Self-Deprecation Present",
+                description="Admitting unfavorable details about self (positive indicator)",
+                patterns=[
+                    r"\bI\s+(should\s+have|shouldn't\s+have|could\s+have|made\s+a\s+mistake)\b",
+                    r"\b(my\s+fault|I\s+was\s+wrong|I\s+admit)\b",
+                    r"\b(stupid|foolish|naive|careless)\s+of\s+me\b",
+                ],
+                weight=-0.4,  # Negative weight - reduces deception score
+                category="CBCA",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Unusual Specific Details",
+                description="Unique specifics hard to invent (positive indicator)",
+                patterns=[
+                    r"\b(peculiar|odd|strange|unusual|distinctive)\s+(thing|detail|feature)\b",
+                    r"\b(I\s+noticed|I\s+remember)\s+(specifically|particularly|distinctly)\b",
+                    r"\b(the\s+exact|precisely|specifically)\s+(color|colour|shape|size|time|words)\b",
+                ],
+                weight=-0.3,  # Mild negative - can go either way
+                category="CBCA",
+                is_new=True
+            ),
+
+            # ============================================================
+            # NEW INDICATORS - Reality Monitoring
+            # ============================================================
+            DeceptionIndicator(
+                name="Lacks Sensory Details",
+                description="Missing smell, taste, touch, sound - signs of fabrication",
+                patterns=[
+                    r"^(?!.*\b(smell|smelled|taste|tasted|felt|heard|sound|noise|touch|texture|cold|hot|warm|loud|quiet)\b).{150,}$",
+                ],
+                weight=1.4,
+                category="Reality",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Rich Sensory Details",
+                description="Contains perceptual information suggesting real memory (positive)",
+                patterns=[
+                    r"\b(smelled|smelt)\s+(like|of)\b",
+                    r"\b(tasted|taste\s+of)\b",
+                    r"\b(felt|feeling)\s+(cold|warm|hot|rough|smooth|soft|hard)\b",
+                    r"\b(heard|sound|noise)\s+(of|like)\b",
+                    r"\b(bright|dark|dim|loud|quiet|silent)\b",
+                ],
+                weight=-0.5,  # Negative weight - reduces deception score
+                category="Reality",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Excessive Cognitive Operations",
+                description="Too much 'I thought/realized/knew' - sign of construction",
+                patterns=[
+                    r"\bI\s+(thought|realized|knew|understood|figured|assumed)\s+(that|to\s+myself)?\b",
+                    r"\bI\s+(was\s+thinking|kept\s+thinking|started\s+to\s+think)\b",
+                    r"\b(it\s+occurred\s+to\s+me|I\s+came\s+to\s+realize)\b",
+                    r"\bI\s+(suppose|presume|imagine|expect)\s+(that)?\b",
+                ],
+                weight=1.3,
+                category="Reality",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Spatial Awareness Present",
+                description="Clear sense of physical space/layout (positive indicator)",
+                patterns=[
+                    r"\b(to\s+the\s+left|to\s+the\s+right|in\s+front\s+of|behind|next\s+to|across\s+from)\b",
+                    r"\b(about|approximately|roughly)\s+\d+\s*(feet|meters|metres|yards|inches)\b",
+                    r"\b(facing|opposite|adjacent\s+to|near\s+the)\b",
+                ],
+                weight=-0.4,  # Negative weight - reduces deception score
+                category="Reality",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Emotional State Described",
+                description="Internal emotional experience suggests real memory (positive)",
+                patterns=[
+                    r"\bI\s+(felt|was\s+feeling)\s+(scared|afraid|terrified|anxious|nervous|relieved|happy|angry|confused|shocked)\b",
+                    r"\b(my\s+heart|I\s+was\s+shaking|trembling|sweating|frozen)\b",
+                    r"\b(panic|fear|relief|shock)\s+(set\s+in|washed\s+over|hit\s+me)\b",
+                ],
+                weight=-0.4,  # Negative weight - reduces deception score
+                category="Reality",
+                is_new=True
+            ),
+
+            # ============================================================
+            # NEW INDICATORS - Statement Structure Analysis
+            # ============================================================
+            DeceptionIndicator(
+                name="Imbalanced Statement Structure",
+                description="Too much prologue, too little aftermath - classic deception pattern",
+                patterns=[
+                    r"^.{0,50}(before|prior\s+to|leading\s+up).{200,}(then|when).{0,100}$",
+                ],
+                weight=1.5,
+                category="Structure",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Skipped Aftermath",
+                description="Story ends abruptly after main event without follow-up",
+                patterns=[
+                    r"\b(and\s+that('s|\s+is)\s+(it|all|what\s+happened))\b",
+                    r"\b(the\s+end|that's\s+basically\s+it|that's\s+my\s+story)\b",
+                    r"(\.|\!)\s*$(?<!(\bpolice\b|\breported\b|\bhospital\b|\bhelp\b).{0,50}$)",
+                ],
+                weight=1.3,
+                category="Structure",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="First Person Dropout",
+                description="'I' disappears during critical parts of narrative",
+                patterns=[
+                    r"\b(the|a)\s+(door|window|car|item)\s+(was|were|had\s+been)\b(?!.*\bI\b.{0,30}$)",
+                    r"\b(it|there)\s+(was|were)\s+(decided|agreed|done)\b",
+                ],
+                weight=1.5,
+                category="Structure",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Left vs Went Usage",
+                description="'Left' implies leaving something behind - often evasive",
+                patterns=[
+                    r"\bI\s+left\b(?!\s+(for|to\s+go|the))",
+                    r"\b(we|they)\s+left\b(?!\s+(for|to\s+go|the))",
+                ],
+                weight=1.1,
+                category="Structure",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Weak Opening Commitment",
+                description="Fails to commit to core claim in opening",
+                patterns=[
+                    r"^(I\s+think|I\s+believe|As\s+far\s+as\s+I\s+know|To\s+be\s+honest)",
+                    r"^(Basically|Essentially|In\s+essence|More\s+or\s+less)",
+                ],
+                weight=1.4,
+                category="Structure",
+                is_new=True
+            ),
+
+            # ============================================================
+            # NEW INDICATORS - Linguistic Complexity / NLP
+            # ============================================================
+            DeceptionIndicator(
+                name="Excessive Negations",
+                description="Over-explaining what didn't happen rather than what did",
+                patterns=[
+                    r"\b(didn't|did\s+not|wasn't|were\s+not|hadn't|have\s+not|never)\b.*\b(didn't|did\s+not|wasn't|were\s+not|hadn't|have\s+not|never)\b",
+                    r"\b(no|not|never|nothing|none|nobody)\b.{0,30}\b(no|not|never|nothing|none|nobody)\b",
+                    r"\bI\s+(didn't|did\s+not)\s+\w+\s+(and|or)\s+(didn't|did\s+not)\b",
+                ],
+                weight=1.4,
+                category="NLP",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Tense Inconsistency",
+                description="Shifting between past and present tense inappropriately",
+                patterns=[
+                    r"\b(was|were|had)\b.{0,50}\b(is|are|has|have)\b.{0,50}\b(was|were|had)\b",
+                    r"\b(said|told|went)\b.{0,30}\b(say|tell|go)\b",
+                ],
+                weight=1.3,
+                category="NLP",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Causality Overuse",
+                description="Excessive use of 'because/so that' - constructing justifications",
+                patterns=[
+                    r"\b(because|since|so\s+that|in\s+order\s+to|that's\s+why)\b.*\b(because|since|so\s+that|in\s+order\s+to|that's\s+why)\b",
+                    r"\b(the\s+reason|this\s+is\s+why|that's\s+the\s+reason)\b",
+                ],
+                weight=1.2,
+                category="NLP",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Certainty Undermining",
+                description="Starts certain but undermines own statement",
+                patterns=[
+                    r"\b(definitely|certainly|absolutely)\b.{0,50}\b(I\s+think|maybe|probably|possibly)\b",
+                    r"\b(I\s+know|I'm\s+sure)\b.{0,30}\b(but|although|however)\b",
+                ],
+                weight=1.4,
+                category="NLP",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Distancing Temporal Language",
+                description="Using past perfect to create psychological distance",
+                patterns=[
+                    r"\b(had\s+been|had\s+gone|had\s+done|had\s+said|had\s+made)\b",
+                    r"\b(by\s+that\s+time|at\s+that\s+point|by\s+then)\b.{0,30}\b(had)\b",
+                ],
+                weight=1.1,
+                category="NLP",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Filler Words Cluster",
+                description="Clusters of filler words suggesting cognitive load",
+                patterns=[
+                    r"\b(um|uh|er|ah|like|you\s+know|basically|actually|literally)\b.{0,20}\b(um|uh|er|ah|like|you\s+know|basically|actually|literally)\b",
+                    r"\b(kind\s+of|sort\s+of|I\s+guess|I\s+mean)\b.{0,20}\b(kind\s+of|sort\s+of|I\s+guess|I\s+mean)\b",
+                ],
+                weight=1.2,
+                category="NLP",
+                is_new=True
+            ),
+            DeceptionIndicator(
+                name="Verb Phrase Simplification",
+                description="Overly simple verb constructions under cognitive load",
+                patterns=[
+                    r"\b(I|he|she|we|they)\s+(went|got|did|made|took|put|said)\b.{0,20}\b(I|he|she|we|they)\s+(went|got|did|made|took|put|said)\b",
+                ],
+                weight=1.0,
+                category="NLP",
+                is_new=True
+            ),
         ]
 
     def analyze(self, text: str) -> dict:
@@ -448,7 +789,8 @@ class DeceptionDetector:
                         'text': match.group(),
                         'indicator': indicator.name,
                         'category': indicator.category,
-                        'weight': indicator.weight
+                        'weight': indicator.weight,
+                        'is_new': indicator.is_new
                     })
 
             if matches:
@@ -465,7 +807,8 @@ class DeceptionDetector:
                     'matches': list(set(matches))[:5],
                     'count': len(matches),
                     'weight': indicator.weight,
-                    'contribution': round(weighted_score, 2)
+                    'contribution': round(weighted_score, 2),
+                    'is_new': indicator.is_new
                 })
 
         # Calculate score
@@ -541,20 +884,39 @@ class DeceptionDetector:
         result = text
         for match in filtered_matches:
             weight = match['weight']
-            if weight >= 1.5:
+            is_new = match.get('is_new', False)
+
+            # Positive indicators (negative weight) - green
+            if weight < 0:
+                bg_color = "#bbf7d0"  # green-200
+                border = "#22c55e"  # green-500
+                text_color = "#166534"  # green-800
+            # High weight deception indicators - red
+            elif weight >= 1.5:
                 bg_color = "#fecaca"  # red-200
                 border = "#ef4444"  # red-500
                 text_color = "#991b1b"  # red-800
+            # Medium weight - orange
             elif weight >= 1.3:
                 bg_color = "#fed7aa"  # orange-200
                 border = "#f97316"  # orange-500
                 text_color = "#9a3412"  # orange-800
+            # Low weight - yellow
             else:
                 bg_color = "#fef08a"  # yellow-200
                 border = "#eab308"  # yellow-500
                 text_color = "#854d0e"  # yellow-800
 
-            highlighted = f'<span class="highlight" style="background-color: {bg_color}; color: {text_color}; border-bottom: 2px solid {border}; padding: 2px 4px; border-radius: 3px; cursor: help; font-weight: 500;" title="{match["indicator"]} ({match["category"]})">{match["text"]}</span>'
+            # New indicators get cyan/teal tint overlay
+            if is_new and weight > 0:
+                bg_color = "#cffafe"  # cyan-100
+                text_color = "#164e63"  # cyan-900
+                border_style = f"2px dashed {border}"
+            else:
+                border_style = f"2px solid {border}"
+
+            new_badge = ' [NEW]' if is_new else ''
+            highlighted = f'<span class="highlight" style="background-color: {bg_color}; color: {text_color}; border-bottom: {border_style}; padding: 2px 4px; border-radius: 3px; cursor: help; font-weight: 500;" title="{match["indicator"]}{new_badge} ({match["category"]})">{match["text"]}</span>'
             result = result[:match['start']] + highlighted + result[match['end']:]
 
         return result.replace('\n', '<br>')
@@ -703,12 +1065,14 @@ def login():
     error = None
     if request.method == 'POST':
         email = request.form.get('email', '').lower().strip()
-        if email in AUTHORIZED_USERS:
+        password = request.form.get('password', '')
+
+        if email in AUTHORIZED_USERS and AUTHORIZED_USERS[email] == password:
             session['user'] = email
             next_url = request.args.get('next', url_for('rules'))
             return redirect(next_url)
         else:
-            error = 'Access denied. You are not authorized to access this system.'
+            error = 'Invalid email or password.'
     return render_template('login.html', error=error)
 
 
@@ -738,7 +1102,8 @@ def get_rules():
             'patterns': ind.patterns,
             'weight': custom_weights.get(i, ind.weight),
             'default_weight': ind.weight,
-            'enabled': custom_weights.get(f'{i}_enabled', True)
+            'enabled': custom_weights.get(f'{i}_enabled', True),
+            'is_new': ind.is_new
         })
     return jsonify(rules)
 

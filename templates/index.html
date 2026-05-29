@@ -433,22 +433,35 @@ Examples of what you can analyze:
 • Earnings call transcripts
 • Emails or messages
 • Any statement or narrative"></textarea>
-                <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeText()">
-                    Analyze for Deception Indicators
-                </button>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeText()" style="flex: 1;">
+                        Analyze for Deception Indicators
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadSampleText()" style="flex: 0 0 auto; background: rgba(6, 182, 212, 0.2); border: 1px solid #06b6d4; color: #06b6d4;">
+                        Load Sample
+                    </button>
+                </div>
 
                 <div class="legend">
                     <div class="legend-item">
                         <div class="legend-color" style="background: #fecaca; border: 1px solid #ef4444;"></div>
-                        High Weight
+                        High Risk
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background: #fed7aa; border: 1px solid #f97316;"></div>
-                        Medium Weight
+                        Medium Risk
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background: #fef08a; border: 1px solid #eab308;"></div>
-                        Low Weight
+                        Low Risk
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #cffafe; border: 2px dashed #06b6d4;"></div>
+                        New Rule
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #bbf7d0; border: 1px solid #22c55e;"></div>
+                        Truthful Signal
                     </div>
                 </div>
             </div>
@@ -735,6 +748,37 @@ Examples of what you can analyze:
                     }
                 }
             });
+        }
+
+        // Load sample text
+        function loadSampleText() {
+            const sampleText = `Claim Reference: HMI-2026-447821
+Policy Number: PHH-9934-WALES-002
+Insurer: Heartland Mutual Insurance plc
+Date of Claim: 14 May 2026
+
+Claimant Details
+Name: Derek Alan Shufflebottom
+Address: 14 Brecknock Close, Pontypridd, CF37 8QP
+Policy Type: Home Contents and Buildings (Premium Plus)
+
+Statement of Loss
+On the night of 11 May 2026, I returned home from a charity quiz evening at the Pontypridd Bowls Club (I came third, for the record) to discover that my property had been entered via the rear kitchen window. The perpetrators appear to have been professionals, as there was remarkably little sign of disturbance beyond the items listed below.
+
+Items Reported Stolen:
+- Rolex Submariner - Purchased in Geneva, 2019 - £14,800
+- Bose home cinema system - 72-inch screen, 11.2 surround - £6,200
+- Laptop - Brand new, still in box - £3,400
+- Wife's jewellery collection - Grandmother's pearls etc - £22,500
+- Antique writing desk - Georgian, provenance documented - £8,750
+Total: £55,650
+
+I have photographs of most items and can provide further documentation upon request. I would like this resolved as quickly as possible as my wife is very distressed.
+
+Signed: D. A. Shufflebottom
+Date: 14 May 2026`;
+
+            document.getElementById('inputText').value = sampleText;
         }
 
         // Allow Ctrl+Enter to submit

@@ -276,6 +276,16 @@
         .weight-low { background: rgba(234, 179, 8, 0.2); color: #eab308; }
         .weight-medium { background: rgba(249, 115, 22, 0.2); color: #f97316; }
         .weight-high { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .weight-positive { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+
+        .rule-card-new {
+            border-color: rgba(6, 182, 212, 0.5);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(255,255,255,0.05) 100%);
+        }
+
+        .rule-card-new:hover {
+            border-color: rgba(6, 182, 212, 0.8);
+        }
 
         .expand-icon {
             font-size: 18px;
@@ -585,6 +595,10 @@
                 <button class="filter-btn" data-category="Insurance" onclick="setFilter('Insurance')">Insurance</button>
                 <button class="filter-btn" data-category="Corporate" onclick="setFilter('Corporate')">Corporate</button>
                 <button class="filter-btn" data-category="Manipulation" onclick="setFilter('Manipulation')">Manipulation</button>
+                <button class="filter-btn" data-category="CBCA" onclick="setFilter('CBCA')" style="border-color: #06b6d4;">CBCA</button>
+                <button class="filter-btn" data-category="Reality" onclick="setFilter('Reality')" style="border-color: #06b6d4;">Reality</button>
+                <button class="filter-btn" data-category="Structure" onclick="setFilter('Structure')" style="border-color: #06b6d4;">Structure</button>
+                <button class="filter-btn" data-category="NLP" onclick="setFilter('NLP')" style="border-color: #06b6d4;">NLP</button>
             </div>
             <div class="action-buttons">
                 <button class="btn btn-secondary" onclick="exportRules()">Export</button>
@@ -660,20 +674,32 @@
         }
 
         function createRuleCard(rule) {
-            const weightClass = rule.weight >= 1.5 ? 'weight-high' :
-                               rule.weight >= 1.3 ? 'weight-medium' : 'weight-low';
+            let weightClass;
+            if (rule.weight < 0) {
+                weightClass = 'weight-positive';  // Green for positive indicators
+            } else if (rule.weight >= 1.5) {
+                weightClass = 'weight-high';
+            } else if (rule.weight >= 1.3) {
+                weightClass = 'weight-medium';
+            } else {
+                weightClass = 'weight-low';
+            }
+
             const isModified = rule.weight !== rule.default_weight;
             const enabledClass = rule.enabled ? '' : 'disabled';
             const toggleClass = rule.enabled ? 'active' : '';
+            const isNew = rule.is_new || false;
+            const newCardClass = isNew ? 'rule-card-new' : '';
 
             return `
-                <div class="rule-card ${enabledClass}" data-id="${rule.id}" data-category="${rule.category}">
+                <div class="rule-card ${enabledClass} ${newCardClass}" data-id="${rule.id}" data-category="${rule.category}">
                     <div class="rule-header" onclick="toggleExpand(${rule.id})">
                         <div class="rule-title">
                             <div class="rule-toggle ${toggleClass}" onclick="event.stopPropagation(); toggleRule(${rule.id})"></div>
                             <span class="rule-name">${rule.name}</span>
                             <span class="rule-category">${rule.category}</span>
-                            ${isModified ? '<span style="color: #f97316; font-size: 12px;">Modified</span>' : ''}
+                            ${isNew ? '<span style="background: #06b6d4; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">NEW</span>' : ''}
+                            ${isModified ? '<span style="color: #f97316; font-size: 12px; margin-left: 8px;">Modified</span>' : ''}
                         </div>
                         <div class="rule-meta">
                             <span class="weight-badge ${weightClass}">${rule.weight.toFixed(1)}x</span>
