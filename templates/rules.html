@@ -584,6 +584,11 @@
         <div class="toolbar">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Search rules..." oninput="filterRules()">
+                <select id="sourceFilter" onchange="filterRules()" style="padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; font-size: 14px; cursor: pointer;">
+                    <option value="all">All Sources</option>
+                    <option value="ddl">DDL Proprietary</option>
+                    <option value="public">Public Research</option>
+                </select>
             </div>
             <div class="filter-buttons">
                 <button class="filter-btn active" data-category="all" onclick="setFilter('all')">All</button>
@@ -614,6 +619,14 @@
             <div class="stat-item">
                 <span class="stat-value" id="enabledRules">0</span>
                 <span class="stat-label">Enabled</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="ddlRules" style="color: #8b5cf6;">0</span>
+                <span class="stat-label">DDL Proprietary</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="publicRules" style="color: #888;">0</span>
+                <span class="stat-label">Public Research</span>
             </div>
             <div class="stat-item">
                 <span class="stat-value" id="modifiedRules">0</span>
@@ -662,12 +675,14 @@
         function renderRules() {
             const grid = document.getElementById('rulesGrid');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const sourceFilter = document.getElementById('sourceFilter').value;
 
             const filteredRules = rules.filter(rule => {
                 const matchesFilter = currentFilter === 'all' || rule.category === currentFilter;
                 const matchesSearch = rule.name.toLowerCase().includes(searchTerm) ||
                                      rule.description.toLowerCase().includes(searchTerm);
-                return matchesFilter && matchesSearch;
+                const matchesSource = sourceFilter === 'all' || rule.source === sourceFilter;
+                return matchesFilter && matchesSearch && matchesSource;
             });
 
             grid.innerHTML = filteredRules.map(rule => createRuleCard(rule)).join('');
@@ -698,6 +713,7 @@
                             <div class="rule-toggle ${toggleClass}" onclick="event.stopPropagation(); toggleRule(${rule.id})"></div>
                             <span class="rule-name">${rule.name}</span>
                             <span class="rule-category">${rule.category}</span>
+                            ${rule.source === 'ddl' ? '<span style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">DDL</span>' : '<span style="background: rgba(255,255,255,0.1); color: #888; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">PUBLIC</span>'}
                             ${isNew ? '<span style="background: #06b6d4; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">NEW</span>' : ''}
                             ${isModified ? '<span style="color: #f97316; font-size: 12px; margin-left: 8px;">Modified</span>' : ''}
                         </div>
@@ -937,6 +953,8 @@
         function updateStats() {
             document.getElementById('totalRules').textContent = rules.length;
             document.getElementById('enabledRules').textContent = rules.filter(r => r.enabled).length;
+            document.getElementById('ddlRules').textContent = rules.filter(r => r.source === 'ddl').length;
+            document.getElementById('publicRules').textContent = rules.filter(r => r.source === 'public').length;
             document.getElementById('modifiedRules').textContent = rules.filter(r => r.weight !== r.default_weight).length;
         }
 

@@ -40,6 +40,7 @@ class DeceptionIndicator:
     weight: float = 1.0
     category: str = "General"
     is_new: bool = False  # Flag for newly added indicators
+    source: str = "public"  # "ddl" for DDL proprietary, "public" for established research
     examples: List[str] = field(default_factory=list)
 
 
@@ -276,7 +277,7 @@ class DeceptionDetector:
                 category="Sensitivity"
             ),
 
-            # === CORPORATE/FORMAL DECEPTION ===
+            # === CORPORATE/FORMAL DECEPTION (DDL Proprietary) ===
             DeceptionIndicator(
                 name="Corporate Double-Speak",
                 description="Vague corporate language that obscures meaning",
@@ -287,7 +288,8 @@ class DeceptionDetector:
                     r"\b(challenges|headwinds|opportunities)\s+(ahead|remain)\b",
                 ],
                 weight=1.3,
-                category="Corporate"
+                category="Corporate",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Earnings Call Red Flags",
@@ -299,10 +301,11 @@ class DeceptionDetector:
                     r"\b(underlying|core|adjusted)\s+(performance|results|earnings)\b",
                 ],
                 weight=1.4,
-                category="Corporate"
+                category="Corporate",
+                source="ddl"
             ),
 
-            # === MANIPULATION ===
+            # === MANIPULATION (DDL Proprietary) ===
             DeceptionIndicator(
                 name="Love Bombing",
                 description="Intense positive language used in manipulation",
@@ -313,7 +316,8 @@ class DeceptionDetector:
                     r"\b(only\s+you|you're\s+the\s+only\s+one)\b",
                 ],
                 weight=1.6,
-                category="Manipulation"
+                category="Manipulation",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Urgency Creation",
@@ -325,10 +329,11 @@ class DeceptionDetector:
                     r"\b(before\s+it's\s+too\s+late|last\s+chance)\b",
                 ],
                 weight=1.5,
-                category="Manipulation"
+                category="Manipulation",
+                source="ddl"
             ),
 
-            # === INSURANCE FRAUD ===
+            # === INSURANCE FRAUD (DDL Proprietary) ===
             DeceptionIndicator(
                 name="Overly Specific Alibi",
                 description="Rehearsed-sounding alibi with unnecessary details",
@@ -339,7 +344,8 @@ class DeceptionDetector:
                     r"\b(can\s+verify|will\s+confirm|can\s+vouch|witnesses?\s+who)\b",
                 ],
                 weight=1.6,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Pre-emptive Explanation",
@@ -352,7 +358,8 @@ class DeceptionDetector:
                     r"\b(no\s+longer\s+have|lost|misplaced|can't\s+find)\s+(the\s+)?(receipt|proof|documentation|evidence)\b",
                 ],
                 weight=1.7,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Claim Urgency",
@@ -364,7 +371,8 @@ class DeceptionDetector:
                     r"\b(hoping|expect|need)\s+(for\s+)?(a\s+)?(quick|swift|prompt|speedy)\s+(resolution|settlement|payment)\b",
                 ],
                 weight=1.5,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Emotional Leverage",
@@ -376,7 +384,8 @@ class DeceptionDetector:
                     r"\b(sleepless\s+nights|can't\s+sleep|losing\s+sleep|anxiety)\b",
                 ],
                 weight=1.4,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Convenient Documentation",
@@ -389,7 +398,8 @@ class DeceptionDetector:
                     r"\b(provenance|authenticity)\s+(documented|certified|verified|available)\b",
                 ],
                 weight=1.3,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Value Inflation Signals",
@@ -402,7 +412,8 @@ class DeceptionDetector:
                     r"\b(top\s+of\s+the\s+(line|range)|premium|deluxe|luxury)\b",
                 ],
                 weight=1.4,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Vague Item Descriptions",
@@ -414,7 +425,8 @@ class DeceptionDetector:
                     r"\b(other|additional|further)\s+(items|valuables|belongings)\b",
                 ],
                 weight=1.2,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
             DeceptionIndicator(
                 name="Staged Discovery",
@@ -425,7 +437,8 @@ class DeceptionDetector:
                     r"\b(couldn't\s+believe|could\s+not\s+believe|couldn't\s+believe\s+my\s+eyes)\b",
                 ],
                 weight=1.3,
-                category="Insurance"
+                category="Insurance",
+                source="ddl"
             ),
 
             # ============================================================
@@ -1102,7 +1115,8 @@ def get_rules():
             'weight': custom_weights.get(i, ind.weight),
             'default_weight': ind.weight,
             'enabled': custom_weights.get(f'{i}_enabled', True),
-            'is_new': ind.is_new
+            'is_new': ind.is_new,
+            'source': ind.source  # "ddl" or "public"
         })
     return jsonify(rules)
 
