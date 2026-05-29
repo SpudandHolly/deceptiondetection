@@ -699,19 +699,48 @@ David Wilson`
             document.getElementById('resultB').innerHTML = renderResultPanel(dataB, 'B', onlyInB);
 
             // Render comparison summary
-            const scoreDiff = dataB.score - dataA.score;
-            const diffClass = scoreDiff > 0 ? 'diff-positive' : scoreDiff < 0 ? 'diff-negative' : '';
-            const diffText = scoreDiff > 0 ? `+${scoreDiff}` : scoreDiff.toString();
+            const scoreDiff = (dataB.score - dataA.score).toFixed(2);
+            const diffClass = parseFloat(scoreDiff) > 0 ? 'diff-positive' : parseFloat(scoreDiff) < 0 ? 'diff-negative' : '';
+            const diffText = parseFloat(scoreDiff) > 0 ? `+${scoreDiff}` : scoreDiff;
+
+            // Generate comparison interpretation
+            let comparisonInterpretation = '';
+            const scoreDiffNum = parseFloat(scoreDiff);
+
+            if (Math.abs(scoreDiffNum) < 5) {
+                comparisonInterpretation = 'Both statements show similar risk levels. Look for qualitative differences in the specific indicators detected rather than overall scores.';
+            } else if (scoreDiffNum > 20) {
+                comparisonInterpretation = 'Statement B shows significantly higher deception indicators than Statement A. This substantial increase may indicate the subject became less careful, introduced fabricated details, or was caught in inconsistencies requiring explanation.';
+            } else if (scoreDiffNum > 10) {
+                comparisonInterpretation = 'Statement B shows notably more deception indicators. The increase warrants examination of what changed between statements and why new concerning patterns emerged.';
+            } else if (scoreDiffNum > 0) {
+                comparisonInterpretation = 'Statement B shows somewhat higher risk indicators. Review the unique indicators in each statement to understand what drove the increase.';
+            } else if (scoreDiffNum < -20) {
+                comparisonInterpretation = 'Statement A shows significantly higher deception indicators than Statement B. The second statement may reflect more careful language or genuine clarification of earlier concerns.';
+            } else if (scoreDiffNum < -10) {
+                comparisonInterpretation = 'Statement A shows notably more deception indicators. Consider whether Statement B represents a more truthful account or simply more guarded language.';
+            } else {
+                comparisonInterpretation = 'Statement A shows somewhat higher risk indicators. Review what indicators dropped off in Statement B.';
+            }
+
+            if (onlyInB.length > onlyInA.length + 3) {
+                comparisonInterpretation += ' Notably, Statement B introduces several new concerning patterns not present in the original statement.';
+            }
 
             document.getElementById('comparisonSummary').innerHTML = `
                 <h2>📊 Comparison Summary</h2>
+
+                <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px; line-height: 1.7;">
+                    <strong style="color: #3b82f6;">Interpretation:</strong> ${comparisonInterpretation}
+                </div>
+
                 <div class="summary-grid">
                     <div class="summary-card">
-                        <div class="summary-card-value" style="color: ${dataA.risk_color};">${dataA.score}</div>
+                        <div class="summary-card-value" style="color: ${dataA.risk_color};">${dataA.score.toFixed(2)}</div>
                         <div class="summary-card-label">Statement A Score</div>
                     </div>
                     <div class="summary-card">
-                        <div class="summary-card-value" style="color: ${dataB.risk_color};">${dataB.score}</div>
+                        <div class="summary-card-value" style="color: ${dataB.risk_color};">${dataB.score.toFixed(2)}</div>
                         <div class="summary-card-label">Statement B Score</div>
                     </div>
                     <div class="summary-card">
@@ -721,6 +750,17 @@ David Wilson`
                     <div class="summary-card">
                         <div class="summary-card-value">${inBoth.length}</div>
                         <div class="summary-card-label">Common Indicators</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div style="background: rgba(59, 130, 246, 0.05); border-radius: 12px; padding: 15px; border-left: 4px solid #3b82f6;">
+                        <strong style="color: #3b82f6;">Statement A Summary:</strong><br>
+                        <span style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">${dataA.plain_summary || 'No significant patterns detected.'}</span>
+                    </div>
+                    <div style="background: rgba(168, 85, 247, 0.05); border-radius: 12px; padding: 15px; border-left: 4px solid #a855f7;">
+                        <strong style="color: #a855f7;">Statement B Summary:</strong><br>
+                        <span style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">${dataB.plain_summary || 'No significant patterns detected.'}</span>
                     </div>
                 </div>
 
@@ -759,7 +799,7 @@ David Wilson`
             return `
                 <div class="score-header">
                     <div class="score-circle" style="border-color: ${data.risk_color};">
-                        <span class="score-number">${data.score}</span>
+                        <span class="score-number">${data.score.toFixed(2)}</span>
                         <span class="score-label">/ 100</span>
                     </div>
                     <div class="score-info">

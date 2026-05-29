@@ -859,6 +859,9 @@ Examples of what you can analyze:
                         </div>
                     </div>
 
+                    <!-- Plain English Summary -->
+                    <div class="plain-summary" id="plainSummary" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px; line-height: 1.7;"></div>
+
                     <!-- Charts Row -->
                     <div class="charts-row">
                         <div class="chart-container">
@@ -1131,11 +1134,14 @@ Please don't wait - just transfer what you can and I'll explain everything when 
             results.classList.add('active');
 
             // Score display
-            document.getElementById('scoreNumber').textContent = data.score;
+            document.getElementById('scoreNumber').textContent = data.score.toFixed(2);
             document.getElementById('scoreCircle').style.borderColor = data.risk_color;
             document.getElementById('riskLevel').textContent = `Risk Level: ${data.risk_level}`;
             document.getElementById('riskLevel').style.color = data.risk_color;
             document.getElementById('wordCount').textContent = `${data.word_count} words • ${data.indicators_count} indicators`;
+
+            // Plain English summary
+            document.getElementById('plainSummary').innerHTML = `<strong style="color: #3b82f6;">Summary:</strong> ${data.plain_summary || 'Analysis complete.'}`;
 
             // Render charts
             renderCategoryChart(data.category_breakdown);

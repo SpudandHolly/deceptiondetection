@@ -867,8 +867,11 @@ class DeceptionDetector:
         # Generate follow-up questions
         follow_up_questions = self._generate_follow_up_questions(indicators_found)
 
+        # Generate plain English summary
+        plain_summary = self._generate_plain_summary(indicators_found, score, risk_level)
+
         return {
-            'score': score,
+            'score': round(score, 2),
             'risk_level': risk_level,
             'risk_color': risk_color,
             'word_count': word_count,
@@ -879,7 +882,8 @@ class DeceptionDetector:
             'trend_data': trend_data,
             'category_breakdown': category_breakdown,
             'red_flags': red_flags,
-            'follow_up_questions': follow_up_questions
+            'follow_up_questions': follow_up_questions,
+            'plain_summary': plain_summary
         }
 
     def _generate_highlighted_html(self, text: str, matches: list) -> str:
@@ -1272,6 +1276,83 @@ class DeceptionDetector:
             })
 
         return questions[:6]  # Return top 6 most relevant questions
+
+    def _generate_plain_summary(self, indicators: list, score: float, risk_level: str) -> str:
+        """Generate a plain English summary of the analysis."""
+        if not indicators or score < 20:
+            return "This statement appears straightforward with no significant linguistic patterns commonly associated with deception. The language is direct and consistent. Standard verification procedures apply."
+
+        # Get top categories
+        category_counts = {}
+        for ind in indicators:
+            cat = ind['category']
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+
+        top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:3]
+        top_cat_names = [cat for cat, _ in top_categories]
+
+        # Build summary based on what was found
+        summary_parts = []
+
+        # Opening statement based on risk
+        if risk_level == "Very High":
+            summary_parts.append("This statement contains multiple significant indicators that warrant careful scrutiny.")
+        elif risk_level == "High":
+            summary_parts.append("This statement shows several patterns that merit further investigation.")
+        elif risk_level == "Medium":
+            summary_parts.append("This statement contains some linguistic patterns worth noting.")
+        else:
+            summary_parts.append("This statement shows minor indicators that may warrant attention.")
+
+        # Category-specific explanations
+        indicator_names = {ind['name'] for ind in indicators}
+
+        if 'Insurance' in top_cat_names:
+            if 'Value Inflation Signals' in indicator_names:
+                summary_parts.append("The claimant uses language often associated with inflated valuations, including references to premium locations, heirlooms, or luxury items.")
+            if 'Pre-emptive Explanation' in indicator_names:
+                summary_parts.append("There are pre-emptive explanations for potential evidence gaps before being questioned about them.")
+            if 'Overly Specific Alibi' in indicator_names:
+                summary_parts.append("The alibi contains unusually specific details that appear rehearsed.")
+            if 'Claim Urgency' in indicator_names:
+                summary_parts.append("There is notable pressure for quick resolution, which can indicate anxiety about scrutiny.")
+
+        if 'Pronouns' in top_cat_names:
+            if 'Pronoun Distancing' in indicator_names:
+                summary_parts.append("The subject uses distancing language, avoiding first-person pronouns during key parts of the narrative.")
+            if 'Pronoun Shift' in indicator_names:
+                summary_parts.append("There are shifts from 'I' to 'we' or passive voice, which can indicate decreased ownership of actions.")
+
+        if 'Hedging' in top_cat_names:
+            summary_parts.append("The statement contains excessive hedging and qualifiers that reduce commitment to the claims being made.")
+
+        if 'Denials' in top_cat_names:
+            summary_parts.append("Denials in this statement are non-specific or indirect rather than clear and unequivocal.")
+
+        if 'CBCA' in top_cat_names:
+            if 'Overly Linear Narrative' in indicator_names:
+                summary_parts.append("The narrative follows an unusually structured, chronological pattern. Genuine accounts typically include digressions and corrections.")
+            if 'No Spontaneous Corrections' in indicator_names:
+                summary_parts.append("The account lacks the spontaneous corrections typically seen in truthful recollections.")
+
+        if 'Reality' in top_cat_names:
+            if 'Lacks Sensory Details' in indicator_names:
+                summary_parts.append("The account lacks sensory details (sounds, smells, physical sensations) that are typically present in genuine memories.")
+            if 'High Cognitive Operations' in indicator_names:
+                summary_parts.append("There is heavy use of cognitive language ('I thought', 'I realized') which can indicate constructed rather than experienced events.")
+
+        if 'Manipulation' in top_cat_names:
+            summary_parts.append("The text contains manipulation tactics such as urgency creation or emotional pressure that warrant caution.")
+
+        if 'Emotional' in top_cat_names:
+            if 'Bolstering' in indicator_names:
+                summary_parts.append("The subject emphasizes their own honesty or character, which is often unnecessary in truthful accounts.")
+
+        # Closing
+        if risk_level in ["High", "Very High"]:
+            summary_parts.append("Independent verification of key claims is strongly recommended before proceeding.")
+
+        return " ".join(summary_parts)
 
 
 # Initialize detector
