@@ -405,6 +405,7 @@
             text-decoration: none;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -478,6 +479,12 @@ Examples of what you can analyze:
                         </div>
                         <div class="risk-level" id="riskLevel">-</div>
                         <div class="word-count" id="wordCount">0 words analyzed</div>
+                    </div>
+
+                    <!-- Deception Trend Chart -->
+                    <h3 style="margin-bottom: 10px; color: #fff;">Deception Trend (Start → End)</h3>
+                    <div class="chart-container" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                        <canvas id="trendChart" height="120"></canvas>
                     </div>
 
                     <!-- Highlighted Text -->
@@ -565,6 +572,9 @@ Examples of what you can analyze:
             riskLevel.style.color = data.risk_color;
             wordCount.textContent = `${data.word_count} words analyzed • ${data.indicators_count} indicators found`;
 
+            // Render trend chart
+            renderTrendChart(data.trend_data, data.risk_color);
+
             // Highlighted text
             document.getElementById('highlightedText').innerHTML = data.highlighted_html;
 
@@ -619,6 +629,111 @@ Examples of what you can analyze:
                     <span>${rec.text}</span>
                 `;
                 recommendationsEl.appendChild(item);
+            });
+        }
+
+        // Chart instance reference
+        let trendChart = null;
+
+        function renderTrendChart(trendData, riskColor) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            // Create gradient fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, 120);
+            gradient.addColorStop(0, riskColor + '80');
+            gradient.addColorStop(1, riskColor + '10');
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: trendData.labels,
+                    datasets: [{
+                        label: 'Deception Intensity',
+                        data: trendData.values,
+                        borderColor: riskColor,
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: riskColor,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                title: function(context) {
+                                    return 'Position: ' + context[0].label;
+                                },
+                                label: function(context) {
+                                    const raw = trendData.raw_values[context.dataIndex];
+                                    return `Intensity: ${context.parsed.y.toFixed(0)}% (weight: ${raw})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#666',
+                                font: { size: 10 },
+                                maxTicksLimit: 10
+                            },
+                            title: {
+                                display: true,
+                                text: 'Text Position (Start → End)',
+                                color: '#888',
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#666',
+                                font: { size: 10 },
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Deception Intensity',
+                                color: '#888',
+                                font: { size: 11 }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
             });
         }
 

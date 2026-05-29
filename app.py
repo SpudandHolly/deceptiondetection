@@ -476,6 +476,9 @@ class DeceptionDetector:
         # Generate highlighted HTML
         highlighted_html = self._generate_highlighted_html(text, all_matches)
 
+        # Generate trend data (deception intensity across text)
+        trend_data = self._generate_trend_data(text, all_matches)
+
         # Sort indicators by contribution
         indicators_found.sort(key=lambda x: x['contribution'], reverse=True)
 
@@ -490,7 +493,8 @@ class DeceptionDetector:
             'indicators_count': len(indicators_found),
             'indicators': indicators_found,
             'highlighted_html': highlighted_html,
-            'recommendations': recommendations
+            'recommendations': recommendations,
+            'trend_data': trend_data
         }
 
     def _generate_highlighted_html(self, text: str, matches: list) -> str:
@@ -536,6 +540,54 @@ class DeceptionDetector:
             result = result[:match['start']] + highlighted + result[match['end']:]
 
         return result.replace('\n', '<br>')
+
+    def _generate_trend_data(self, text: str, matches: list, num_segments: int = 20) -> dict:
+        """Generate trend data showing deception intensity across the text."""
+        text_length = len(text)
+        if text_length == 0 or not matches:
+            return {
+                'labels': [f'{i*5}%' for i in range(num_segments + 1)],
+                'values': [0] * (num_segments + 1),
+                'categories': {}
+            }
+
+        segment_size = text_length / num_segments
+        segment_scores = [0.0] * (num_segments + 1)
+        category_data = {}
+
+        for match in matches:
+            # Determine which segment(s) this match falls into
+            start_segment = int(match['start'] / segment_size)
+            end_segment = int(match['end'] / segment_size)
+
+            # Clamp to valid range
+            start_segment = min(start_segment, num_segments)
+            end_segment = min(end_segment, num_segments)
+
+            # Add weighted score to affected segments
+            for seg in range(start_segment, end_segment + 1):
+                segment_scores[seg] += match['weight']
+
+            # Track by category
+            cat = match['category']
+            if cat not in category_data:
+                category_data[cat] = [0.0] * (num_segments + 1)
+            for seg in range(start_segment, end_segment + 1):
+                category_data[cat][seg] += match['weight']
+
+        # Normalize scores to 0-100 scale
+        max_score = max(segment_scores) if max(segment_scores) > 0 else 1
+        normalized_scores = [round((s / max_score) * 100, 1) for s in segment_scores]
+
+        # Generate labels (position in text as percentage)
+        labels = [f'{int(i * (100 / num_segments))}%' for i in range(num_segments + 1)]
+
+        return {
+            'labels': labels,
+            'values': normalized_scores,
+            'raw_values': [round(s, 2) for s in segment_scores],
+            'categories': {cat: [round(v, 2) for v in vals] for cat, vals in category_data.items()}
+        }
 
     def _generate_recommendations(self, indicators: list, risk_level: str) -> list:
         """Generate recommendations based on findings."""
